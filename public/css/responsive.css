@@ -1,0 +1,355 @@
+/* ============================================
+   SOUND DENTAL CLINIC - RESPONSIVE DESIGN
+   Built by Namvi Digital
+   ============================================ */
+
+/* Large Tablets & Small Desktops */
+@media (max-width: 1200px) {
+    section { padding: 5rem 3rem; }
+    .hero-left { padding: 4rem 3rem; }
+    
+    .doctors-grid,
+    .services-grid,
+    .reviews-grid { 
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .book-grid { gap: 3rem; }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+    section { padding: 4rem 2.5rem; }
+    nav { padding: 0 2rem; }
+    footer { padding: 2.5rem; flex-direction: column; gap: 1.5rem; text-align: center; }
+    
+    .hero { 
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+    
+    .hero-left { 
+        padding: 6rem 3rem 4rem;
+        text-align: center;
+        align-items: center;
+    }
+    
+    .hero-left::before,
+    .hero-left::after,
+    .hero-decoration { display: none; }
+    
+    .hero-badge { margin: 0 auto 2rem; }
+    
+    .hero-title { font-size: 3rem; }
+    
+    .hero-sub,
+    .hero-sub-th { 
+        margin: 0 auto 1rem; 
+        max-width: 500px;
+    }
+    
+    .hero-sub-th { margin-bottom: 2rem; }
+    
+    .hero-stars { margin: 0 auto 2.5rem; }
+    
+    .hero-actions { justify-content: center; }
+    
+    .hero-right { 
+        padding: 3rem 2rem 4rem;
+        min-height: auto;
+    }
+    
+    .hero-card { max-width: 420px; margin: 0 auto; }
+    
+    .section-sub { max-width: 100%; }
+    
+    .book-grid { 
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
+    .nav-links { gap: 1.5rem; }
+    
+    .nav-links a { font-size: 12px; }
+}
+
+/* Small Tablets */
+@media (max-width: 768px) {
+    section { padding: 3.5rem 1.5rem; }
+    nav { padding: 0 1.5rem; height: 64px; }
+    
+    .nav-links { display: none; }
+    
+    .nav-logo { font-size: 20px; }
+    
+    /* Mobile menu button would go here */
+    
+    .hero-title { font-size: 2.5rem; }
+    
+    .doctors-grid,
+    .services-grid,
+    .reviews-grid { 
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    
+    .doctor-card,
+    .service-card,
+    .review-card { 
+        padding: 1.75rem;
+    }
+    
+    .section-title { font-size: 2rem; }
+    
+    .hero-actions { 
+        flex-direction: column; 
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .hero-actions button { width: 100%; }
+    
+    .service-pills { gap: 6px; }
+    
+    .service-pill { 
+        font-size: 11px; 
+        padding: 6px 12px; 
+    }
+    
+    .chatbot-messages { 
+        min-height: 280px;
+        max-height: 320px;
+    }
+    
+    .qr-btn { 
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+    
+    .book-info h3 { font-size: 1.5rem; }
+    
+    footer { 
+        padding: 2rem 1.5rem;
+        font-size: 12px;
+    }
+    
+    .footer-logo { font-size: 18px; }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+    section { padding: 3rem 1.25rem; }
+    nav { padding: 0 1rem; height: 60px; }
+    
+    .nav-logo { font-size: 18px; }
+    .nav-logo::before { font-size: 16px; }
+    
+    .hero-left { padding: 5rem 1.5rem 3rem; }
+    
+    .hero-title { font-size: 2rem; }
+    
+    .hero-sub { font-size: 14px; }
+    .hero-sub-th { font-size: 13px; }
+    
+    .hero-stars { 
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .review-count { 
+        border-left: none;
+        padding-left: 0;
+    }
+    
+    .hero-right { padding: 2rem 1.25rem 3rem; }
+    
+    .hero-card { padding: 1.75rem; }
+    .hero-card-title { font-size: 22px; }
+    
+    .section-label { font-size: 11px; }
+    .section-title { font-size: 1.75rem; }
+    .section-sub { font-size: 14px; }
+    
+    .doctor-card,
+    .service-card,
+    .review-card { 
+        padding: 1.5rem;
+        border-radius: 20px;
+    }
+    
+    .doctor-avatar { width: 60px; height: 60px; font-size: 20px; }
+    .doctor-name { font-size: 15px; }
+    .doctor-role { font-size: 12px; }
+    .doctor-detail { font-size: 12px; }
+    
+    .service-icon { width: 50px; height: 50px; font-size: 22px; }
+    .service-name { font-size: 16px; }
+    .service-name-th { font-size: 12px; }
+    .service-desc { font-size: 13px; }
+    
+    .review-text { font-size: 14px; }
+    .review-author { font-size: 12px; }
+    
+    .chatbot-wrapper { border-radius: 20px; }
+    
+    .chatbot-header { padding: 1rem 1.25rem; }
+    .chatbot-avatar { width: 38px; height: 38px; font-size: 18px; }
+    .chatbot-name { font-size: 14px; }
+    
+    .chatbot-messages { 
+        padding: 1rem;
+        min-height: 250px;
+        max-height: 280px;
+        gap: 12px;
+    }
+    
+    .msg { max-width: 90%; }
+    .msg-bubble { padding: 12px 14px; font-size: 13px; }
+    
+    .quick-replies { gap: 6px; }
+    .qr-btn { padding: 8px 12px; font-size: 11px; }
+    
+    .chatbot-input-area { padding: 1rem 1.25rem; gap: 10px; }
+    .chatbot-input { padding: 12px 16px; font-size: 13px; }
+    .send-btn { width: 44px; height: 44px; }
+    .send-btn svg { width: 16px; height: 16px; }
+    
+    .book-info h3 { font-size: 1.35rem; }
+    .book-info p { font-size: 14px; }
+    
+    .contact-item { 
+        padding: 10px 14px;
+        font-size: 13px;
+        gap: 12px;
+    }
+    
+    .contact-icon { 
+        width: 38px; 
+        height: 38px; 
+        font-size: 16px;
+        border-radius: 10px;
+    }
+    
+    .line-btn { 
+        padding: 14px 24px;
+        font-size: 14px;
+    }
+    
+    .line-icon { width: 20px; height: 20px; }
+    
+    .btn-primary,
+    .btn-secondary { 
+        padding: 14px 24px;
+        font-size: 13px;
+    }
+    
+    footer { 
+        padding: 1.75rem 1.25rem;
+        gap: 1rem;
+    }
+    
+    footer > div:nth-child(2) { 
+        font-size: 11px;
+        line-height: 1.6;
+    }
+    
+    footer > div:last-child { font-size: 11px; }
+    
+    .demo-bar { 
+        font-size: 10px;
+        padding: 8px 15px;
+    }
+}
+
+/* Very Small Mobile Phones */
+@media (max-width: 360px) {
+    .hero-title { font-size: 1.75rem; }
+    .hero-card-title { font-size: 20px; }
+    .section-title { font-size: 1.5rem; }
+    
+    .service-pills { 
+        justify-content: center;
+    }
+    
+    .service-pill { 
+        font-size: 10px;
+        padding: 5px 10px;
+    }
+}
+
+/* Landscape Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+    .hero { min-height: auto; }
+    .hero-left { padding-top: 5rem; padding-bottom: 3rem; }
+    .hero-right { padding: 2rem 1.5rem; }
+    
+    .chatbot-messages { 
+        min-height: 200px;
+        max-height: 250px;
+    }
+}
+
+/* High DPI / Retina Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .doctor-avatar,
+    .service-icon,
+    .chatbot-avatar,
+    .contact-icon { 
+        /* Ensure crisp icons on retina */
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
+
+/* Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    html { scroll-behavior: auto; }
+    
+    .hero-left::before,
+    .hero-left::after,
+    .hero-right::before,
+    .hero-right::after,
+    .hero-decoration,
+    .online-dot,
+    .typing-dot { 
+        animation: none; 
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    /* Future dark mode styles would go here */
+}
+
+/* Print Styles */
+@media print {
+    nav,
+    .demo-bar,
+    .chatbot-wrapper,
+    .hero-actions,
+    .line-btn,
+    footer { display: none; }
+    
+    section { padding: 2rem 1rem; }
+    
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    
+    .doctor-card,
+    .service-card,
+    .review-card { 
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}

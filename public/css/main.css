@@ -1,0 +1,387 @@
+/* ============================================
+   SOUND DENTAL CLINIC - PREMIUM DESIGN SYSTEM
+   Built by Namvi Digital
+   ============================================ */
+
+/* CSS Reset & Base Styles */
+*, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+/* CSS Variables - Premium Color Palette */
+:root {
+    /* Core Colors */
+    --cream: #F8F5F0;
+    --off-white: #FAFAF8;
+    --dark: #1A1A18;
+    --mid: #4A4A46;
+    --light: #8A8A84;
+    
+    /* Accent Colors */
+    --accent: #2C6E5A;
+    --accent-light: #E8F2EE;
+    --accent-mid: #4A9B82;
+    --accent-dark: #1F5242;
+    
+    /* Additional Colors */
+    --gold: #B8956A;
+    --gold-light: #D4B896;
+    --border: rgba(26,26,24,0.08);
+    --line-green: #06C755;
+    
+    /* Gradients */
+    --gradient-accent: linear-gradient(135deg, #2C6E5A 0%, #4A9B82 100%);
+    --gradient-gold: linear-gradient(135deg, #B8956A 0%, #D4B896 100%);
+    --gradient-dark: linear-gradient(135deg, #1A1A18 0%, #2A2A28 100%);
+    --gradient-cream: linear-gradient(135deg, #FAFAF8 0%, #F8F5F0 100%);
+    --gradient-hero: linear-gradient(135deg, #2C6E5A 0%, #1F5242 50%, #4A9B82 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(26,26,24,0.06);
+    --shadow-md: 0 8px 30px rgba(26,26,24,0.08);
+    --shadow-lg: 0 20px 60px rgba(26,26,24,0.12);
+    --shadow-xl: 0 30px 80px rgba(26,26,24,0.16);
+    --shadow-accent: 0 10px 40px rgba(44,110,90,0.25);
+    --shadow-gold: 0 10px 40px rgba(184,149,106,0.25);
+    
+    /* Glass Effect */
+    --glass-bg: rgba(255,255,255,0.7);
+    --glass-border: rgba(255,255,255,0.5);
+    --glass-blur: blur(20px);
+    
+    /* Animations */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-medium: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Base Typography */
+html { 
+    scroll-behavior: smooth; 
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gradient-cream);
+    color: var(--dark);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Selection Style */
+::selection {
+    background: var(--accent);
+    color: white;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--cream);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-dark);
+}
+
+/* Section Shared Styles */
+section { 
+    padding: 6rem 5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-label::before {
+    content: '';
+    width: 30px;
+    height: 2px;
+    background: var(--gradient-accent);
+    border-radius: 2px;
+}
+
+.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--dark);
+    margin-bottom: 1.2rem;
+    position: relative;
+}
+
+.section-title span {
+    color: var(--accent);
+    position: relative;
+}
+
+.section-title span::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: var(--accent-light);
+    z-index: -1;
+    border-radius: 4px;
+}
+
+.section-sub {
+    font-size: 15px;
+    color: var(--mid);
+    max-width: 540px;
+    line-height: 1.8;
+}
+
+/* Premium Button Styles */
+.btn-primary {
+    background: var(--gradient-accent);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-medium);
+    letter-spacing: 0.02em;
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-accent);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:hover { 
+    transform: translateY(-3px);
+    box-shadow: 0 15px 50px rgba(44,110,90,0.35);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--dark);
+    border: 2px solid var(--border);
+    padding: 14px 30px;
+    border-radius: 100px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-medium);
+    font-family: 'DM Sans', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width var(--transition-medium);
+    z-index: -1;
+}
+
+.btn-secondary:hover::before {
+    width: 100%;
+}
+
+.btn-secondary:hover { 
+    border-color: var(--accent);
+    color: white;
+}
+
+/* Demo Bar - Premium Style */
+.demo-bar {
+    background: var(--gradient-dark);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+.demo-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.demo-bar strong { 
+    color: var(--accent-mid);
+    font-weight: 600;
+}
+
+/* Footer - Premium Style */
+footer {
+    background: var(--gradient-dark);
+    color: rgba(255,255,255,0.5);
+    padding: 3rem 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-mid), transparent);
+}
+
+.footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: white;
+}
+
+.footer-logo span { 
+    color: var(--accent-mid); 
+}
+
+/* Floating Animation */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Pulse Animation */
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(44,110,90,0.4); }
+    50% { box-shadow: 0 0 20px 10px rgba(44,110,90,0); }
+}
+
+/* Gradient Animation */
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Fade In Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Scale In Animation */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Decorative Elements */
+.decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.decoration-circle-1 {
+    width: 400px;
+    height: 400px;
+    border: 1px solid rgba(44,110,90,0.1);
+    top: -100px;
+    right: -100px;
+    animation: float 8s ease-in-out infinite;
+}
+
+.decoration-circle-2 {
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(44,110,90,0.05) 0%, transparent 70%);
+    bottom: -50px;
+    left: -50px;
+    animation: float 6s ease-in-out infinite reverse;
+}
+
+/* Premium Card Base */
+.premium-card {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-medium);
+}
+
+.premium-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
