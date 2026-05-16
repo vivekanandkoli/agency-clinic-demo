@@ -243,7 +243,13 @@
 .ba-after,
 .ba-before {
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.ba-after {
+    right: 0;
 }
 
 .ba-img {
@@ -278,7 +284,11 @@
 }
 
 .ba-before {
-    clip-path: inset(0 50% 0 0);
+    /* Width updated by hero-interactions.tsx drag handler; starts at 50% */
+    z-index: 1;
+    width: 50%;
+    right: auto;
+    overflow: hidden;
 }
 
 .ba-label {
@@ -314,7 +324,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    pointer-events: none;
+    /* Must receive pointer events so the slider drag works (JS listens on #baHandle) */
+    pointer-events: auto;
     z-index: 10;
 }
 
@@ -747,28 +758,36 @@
 
 /* ============================================
    REVIEWS INFINITE MARQUEE
+   (Grid cards in components.css; marquee markup is optional)
    ============================================ */
-#reviews .reviews-grid {
-    display: none;
-}
-
 .reviews-marquee-wrapper {
     width: 100%;
     overflow: hidden;
-    margin-top: 3rem;
+    margin-top: 2rem;
     mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.reviews-marquee-dupes {
+    display: contents;
 }
 
 .reviews-marquee-track {
     display: flex;
     gap: 24px;
     width: max-content;
-    animation: marquee-scroll 40s linear infinite;
+    animation: marquee-scroll 48s linear infinite;
+    will-change: transform;
 }
 
 .reviews-marquee-track:hover {
     animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reviews-marquee-track {
+        animation: none;
+    }
 }
 
 @keyframes marquee-scroll {
@@ -790,6 +809,13 @@
 .marquee-review-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-4px);
+}
+
+@media (max-width: 576px) {
+    .marquee-review-card {
+        width: min(300px, 88vw);
+        padding: 1.6rem 1.4rem;
+    }
 }
 
 .marquee-stars {

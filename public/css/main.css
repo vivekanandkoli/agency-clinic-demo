@@ -63,6 +63,17 @@ html {
     scroll-behavior: smooth; 
 }
 
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Fixed nav clears in-page anchor targets (#services, #reviews, …) */
+section[id] {
+    scroll-margin-top: 96px;
+}
+
 body {
     font-family: 'DM Sans', sans-serif;
     background: var(--gradient-cream);

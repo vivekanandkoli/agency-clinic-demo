@@ -7,6 +7,7 @@ import ChatbotWidget from '@/components/chatbot-widget'
 import Navigation from '@/components/navigation'
 import HeroInteractions from '@/components/hero-interactions'
 import ContactForm from '@/components/contact-form'
+import ReviewsSection from '@/components/reviews-section'
 
 // Fetch services from Supabase (with fallback)
 async function getServices(): Promise<Service[]> {
@@ -121,7 +122,13 @@ export default async function Home() {
               <div className="stat-label">Happy Patients</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number" data-target="3" data-suffix="">{doctors.length}</div>
+              <div
+                className="stat-number"
+                data-target={String(Math.max(doctors.length, 0))}
+                data-suffix=""
+              >
+                {doctors.length}
+              </div>
               <div className="stat-label">Specialist Doctors</div>
             </div>
             <div className="stat-item">
@@ -214,23 +221,7 @@ export default async function Home() {
           <span className="section-label">Patient Stories</span>
           <h2 className="section-title">What Our <span>Patients</span> Say</h2>
           <p className="section-sub">Real experiences from our valued patients who trusted us with their smiles.</p>
-          <div className="reviews-grid">
-            <div className="review-card">
-              <div className="review-stars">★★★★★</div>
-              <div className="review-text">&ldquo;The best dental experience I&apos;ve ever had. Dr. Nattapong made my implant procedure completely painless. The clinic is modern, clean, and the staff is incredibly friendly.&rdquo;</div>
-              <div className="review-author">— Sarah M., Expat from UK</div>
-            </div>
-            <div className="review-card">
-              <div className="review-stars">★★★★★</div>
-              <div className="review-text">&ldquo;After years of hiding my smile, Invisalign at Sound Dental changed everything. Dr. Pimnara is amazing - my teeth are now perfectly aligned. Worth every baht!&rdquo;</div>
-              <div className="review-author">— ธนพล ว., Bangkok</div>
-            </div>
-            <div className="review-card">
-              <div className="review-stars">★★★★★</div>
-              <div className="review-text">&ldquo;Found this clinic for emergency toothache on a Sunday. They saw me within an hour and fixed everything. Professional, caring, and reasonable prices. Highly recommend!&rdquo;</div>
-              <div className="review-author">— Michael K., Australian Tourist</div>
-            </div>
-          </div>
+          <ReviewsSection />
         </section>
 
         {/* FAQ Section */}

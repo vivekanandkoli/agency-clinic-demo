@@ -10,16 +10,21 @@ export default function HeroInteractions() {
       document.dispatchEvent(new CustomEvent('openBookingModal'))
     })
 
+    const scrollBehavior: ScrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)')
+      .matches
+      ? 'auto'
+      : 'smooth'
+
     // Hero Services button
     const heroServicesBtn = document.getElementById('heroServicesBtn')
     heroServicesBtn?.addEventListener('click', () => {
-      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })
+      document.getElementById('services')?.scrollIntoView({ behavior: scrollBehavior })
     })
 
     // Hero Chat button
     const heroChatBtn = document.getElementById('heroChatBtn')
     heroChatBtn?.addEventListener('click', () => {
-      document.getElementById('chatbot')?.scrollIntoView({ behavior: 'smooth' })
+      document.getElementById('chatbot')?.scrollIntoView({ behavior: scrollBehavior })
     })
 
     // Sticky bar book button
@@ -42,7 +47,7 @@ export default function HeroInteractions() {
     window.addEventListener('scroll', handleScroll)
 
     backToTop?.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      window.scrollTo({ top: 0, behavior: scrollBehavior })
     })
 
     // Service pill interactions
@@ -77,7 +82,7 @@ export default function HeroInteractions() {
       })
     })
 
-    // Before/After slider
+    // Before/After slider — drag from handle or anywhere on track
     const baSlider = document.getElementById('baSlider')
     const baHandle = document.getElementById('baHandle')
     if (baSlider && baHandle) {
@@ -89,15 +94,34 @@ export default function HeroInteractions() {
         if (before) before.style.width = pct + '%'
         baHandle.style.left = pct + '%'
       }
-      baHandle.addEventListener('mousedown', () => { isDragging = true })
-      document.addEventListener('mousemove', (e) => { if (isDragging) updateSlider(e.clientX) })
-      document.addEventListener('mouseup', () => { isDragging = false })
-      baHandle.addEventListener('touchstart', () => { isDragging = true }, { passive: true })
-      document.addEventListener('touchmove', (e) => { if (isDragging) updateSlider(e.touches[0].clientX) }, { passive: true })
-      document.addEventListener('touchend', () => { isDragging = false })
+      const startFromEvent = (clientX: number) => {
+        isDragging = true
+        updateSlider(clientX)
+      }
+      baSlider.addEventListener('mousedown', (e) => startFromEvent(e.clientX))
+      baSlider.addEventListener(
+        'touchstart',
+        (e) => {
+          startFromEvent(e.touches[0].clientX)
+        },
+        { passive: true }
+      )
+      document.addEventListener('mousemove', (e) => {
+        if (isDragging) updateSlider(e.clientX)
+      })
+      document.addEventListener('mouseup', () => {
+        isDragging = false
+      })
+      document.addEventListener('touchmove', (e) => {
+        if (isDragging) updateSlider(e.touches[0].clientX)
+      }, { passive: true })
+      document.addEventListener('touchend', () => {
+        isDragging = false
+      })
     }
 
-    // Counter animation
+    // Counter animation (skip motion for prefers-reduced-motion)
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const counters = document.querySelectorAll('[data-target]')
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -106,12 +130,19 @@ export default function HeroInteractions() {
           const target = parseFloat(el.dataset.target || '0')
           const suffix = el.dataset.suffix || ''
           const decimal = parseInt(el.dataset.decimal || '0')
+          if (reduceMotion) {
+            el.textContent =
+              (decimal ? target.toFixed(decimal) : Math.floor(target).toLocaleString()) + suffix
+            observer.unobserve(el)
+            return
+          }
           const duration = 2000
           const start = performance.now()
           const animate = (now: number) => {
             const progress = Math.min((now - start) / duration, 1)
             const val = target * progress
-            el.textContent = (decimal ? val.toFixed(decimal) : Math.floor(val).toLocaleString()) + suffix
+            el.textContent =
+              (decimal ? val.toFixed(decimal) : Math.floor(val).toLocaleString()) + suffix
             if (progress < 1) requestAnimationFrame(animate)
           }
           requestAnimationFrame(animate)
