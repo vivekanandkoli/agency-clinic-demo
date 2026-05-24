@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useId } from 'react'
 import type { ChatMessage } from '@/lib/types'
 
 const SYSTEM_PROMPT = `You are a friendly dental clinic assistant for Sound Dental Clinic (คลินิกทันตกรรมซาวด์) in Bangkok, Thailand.
@@ -28,9 +28,10 @@ const QUICK_REPLIES = [
   { text: '💰 Pricing', action: 'How much does teeth whitening cost?' },
 ]
 
-const SESSION_ID = `session_${Date.now()}_${Math.random().toString(36).slice(2)}`
-
 export default function ChatbotWidget() {
+  const reactId = useId().replace(/:/g, '')
+  const sessionIdRef = useRef(`session_${reactId}`)
+
   const [messages, setMessages] = useState<Array<{ text: string; sender: 'bot' | 'user'; id: number }>>([])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -67,7 +68,7 @@ export default function ChatbotWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userText,
-          session_id: SESSION_ID,
+          session_id: sessionIdRef.current,
           history: historyRef.current,
         }),
       })

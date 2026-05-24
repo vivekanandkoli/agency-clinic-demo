@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { requireAdminApi } from '@/lib/auth/require-admin-api'
 import { createAdminClient } from '@/lib/supabase/server'
 
 export async function PUT(request: NextRequest) {
+  const auth = await requireAdminApi()
+  if (auth.error) return auth.error
+
   try {
     const body = await request.json()
     const { id, status } = body

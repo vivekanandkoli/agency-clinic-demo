@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-export default function Navigation() {
+export default function Navigation({ clinicName = 'Sound Dental' }: { clinicName?: string }) {
   useEffect(() => {
     const hamburger = document.getElementById('navHamburger')
     const drawer = document.getElementById('mobileDrawer')
@@ -42,7 +42,16 @@ export default function Navigation() {
   return (
     <>
       <nav>
-        <div className="nav-logo">Sound <span>Dental</span></div>
+        <div className="nav-inner page-container">
+        <div className="nav-logo">
+          {clinicName.includes(' ') ? (
+            <>
+              {clinicName.split(' ')[0]} <span>{clinicName.split(' ').slice(1).join(' ')}</span>
+            </>
+          ) : (
+            clinicName
+          )}
+        </div>
         <div className="nav-links">
           <a href="#services">Services</a>
           <a href="#doctors">Our Team</a>
@@ -62,6 +71,7 @@ export default function Navigation() {
         <button className="nav-hamburger" id="navHamburger" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
+        </div>
       </nav>
 
       {/* Mobile Drawer */}

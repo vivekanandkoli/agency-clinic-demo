@@ -108,19 +108,18 @@ body {
 }
 
 /* Section Shared Styles */
-section { 
-    padding: 6rem 5rem;
+section {
     position: relative;
     overflow: hidden;
 }
 
 .section-label {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.2em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent);
-    margin-bottom: 1rem;
+    margin: 0;
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -136,12 +135,13 @@ section {
 
 .section-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-size: clamp(2.25rem, 4.2vw, 3.15rem);
     font-weight: 600;
-    line-height: 1.15;
+    line-height: 1.12;
     color: var(--dark);
-    margin-bottom: 1.2rem;
+    margin: 0;
     position: relative;
+    text-wrap: balance;
 }
 
 .section-title span {
@@ -162,10 +162,12 @@ section {
 }
 
 .section-sub {
-    font-size: 15px;
+    font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
     color: var(--mid);
-    max-width: 540px;
-    line-height: 1.8;
+    max-width: 36rem;
+    line-height: 1.75;
+    margin: 0;
+    text-wrap: pretty;
 }
 
 /* Premium Button Styles */
@@ -284,10 +286,8 @@ section {
 footer {
     background: var(--gradient-dark);
     color: rgba(255,255,255,0.5);
-    padding: 3rem 5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding-block: clamp(2.5rem, 5vw, 3.5rem);
+    padding-inline: 0;
     font-size: 13px;
     position: relative;
     overflow: hidden;

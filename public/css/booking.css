@@ -224,6 +224,7 @@
     gap: 12px;
 }
 
+button.service-option,
 .service-option {
     background: var(--off-white);
     border: 2px solid transparent;
@@ -232,6 +233,12 @@
     cursor: pointer;
     transition: all 0.25s ease;
     text-align: center;
+    font-family: inherit;
+    width: 100%;
+}
+
+button.service-option {
+    appearance: none;
 }
 
 .service-option:hover {
@@ -284,6 +291,7 @@
     gap: 12px;
 }
 
+button.doctor-option,
 .doctor-option {
     display: flex;
     align-items: center;
@@ -294,6 +302,13 @@
     padding: 16px;
     cursor: pointer;
     transition: all 0.25s ease;
+    font-family: inherit;
+    width: 100%;
+    text-align: left;
+}
+
+button.doctor-option {
+    appearance: none;
 }
 
 .doctor-option:hover {
@@ -725,6 +740,24 @@
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+.booking-error {
+    background: #fee2e2;
+    border: 1px solid #f87171;
+    color: #991b1b;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.booking-empty {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--light);
+    font-size: 14px;
 }
 
 /* Chatbot Booking Elements */

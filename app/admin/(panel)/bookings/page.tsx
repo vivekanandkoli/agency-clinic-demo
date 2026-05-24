@@ -1,11 +1,12 @@
-import { createAdminClient } from '@/lib/supabase/server'
+import { tryCreateAdminClient } from '@/lib/admin-db'
 import BookingsTable from './bookings-table'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 async function getBookings() {
-  const supabase = createAdminClient()
+  const supabase = tryCreateAdminClient()
+  if (!supabase) return []
   const { data, error } = await supabase
     .from('bookings')
     .select('*, services(name), doctors(name)')
@@ -24,12 +25,10 @@ export default async function BookingsPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
-        <div>
-          <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 4 }}>Bookings</h1>
-          <p style={{ color: 'var(--mid)' }}>{bookings.length} total booking{bookings.length !== 1 ? 's' : ''}</p>
-        </div>
-      </div>
+      <h1 className="admin-page-title">Bookings</h1>
+      <p className="admin-page-sub">
+        {bookings.length} total booking{bookings.length !== 1 ? 's' : ''}
+      </p>
       <BookingsTable initialBookings={bookings} />
     </div>
   )
