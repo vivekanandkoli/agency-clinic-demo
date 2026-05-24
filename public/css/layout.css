@@ -1,0 +1,133 @@
+/* ============================================
+   LAYOUT — spacing, alignment, containers
+   ============================================ */
+
+:root {
+    --page-max: 1160px;
+    --page-wide: 1240px;
+    --page-gutter: clamp(1.25rem, 4.5vw, 3.5rem);
+    --section-space: clamp(4.5rem, 9vw, 6.5rem);
+    --section-header-gap: clamp(2.5rem, 5vw, 3.5rem);
+    --stack-sm: 0.75rem;
+    --stack-md: 1.25rem;
+    --stack-lg: 2rem;
+}
+
+main {
+    display: block;
+}
+
+.page-container {
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+}
+
+.page-container--wide {
+    max-width: var(--page-wide);
+}
+
+.page-container--narrow {
+    max-width: 40rem;
+}
+
+/* Section shell: vertical padding only; horizontal via container */
+section:not(.hero):not(.stats-bar) {
+    padding-block: var(--section-space);
+    padding-inline: 0;
+}
+
+.stats-bar {
+    padding-block: clamp(2.5rem, 5vw, 3.25rem) !important;
+    padding-inline: 0 !important;
+}
+
+/* Section header rhythm */
+.section-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-md);
+    margin-bottom: var(--section-header-gap);
+    max-width: 42rem;
+}
+
+.section-header--center {
+    margin-inline: auto;
+    text-align: center;
+    align-items: center;
+}
+
+.section-header--center .section-label {
+    justify-content: center;
+}
+
+.section-header--center .section-sub {
+    margin-inline: auto;
+}
+
+.section-header--wide {
+    max-width: 48rem;
+}
+
+.section-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-lg);
+}
+
+.section-content--grid {
+    display: block;
+}
+
+/* Dark / cream section header overrides */
+#reviews .section-header .section-title,
+#reviews .section-header .section-sub {
+    color: inherit;
+}
+
+#reviews .section-header .section-sub {
+    color: rgba(255, 255, 255, 0.62);
+}
+
+#reviews > .page-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Footer layout */
+.footer-inner {
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.25rem 2rem;
+}
+
+.footer-inner > div:not(.footer-logo) {
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Book section contact form */
+.book-contact {
+    width: 100%;
+    max-width: 40rem;
+    margin-inline: auto;
+    margin-top: var(--section-header-gap);
+    padding-top: var(--section-header-gap);
+    border-top: 1px solid var(--border);
+}
+
+.book-contact-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.35rem, 2.5vw, 1.6rem);
+    font-weight: 600;
+    margin: 0 0 1.5rem;
+    text-align: center;
+    color: var(--dark);
+}

@@ -82,44 +82,6 @@ export default function HeroInteractions() {
       })
     })
 
-    // Before/After slider — drag from handle or anywhere on track
-    const baSlider = document.getElementById('baSlider')
-    const baHandle = document.getElementById('baHandle')
-    if (baSlider && baHandle) {
-      let isDragging = false
-      const updateSlider = (x: number) => {
-        const rect = baSlider.getBoundingClientRect()
-        const pct = Math.min(Math.max(((x - rect.left) / rect.width) * 100, 0), 100)
-        const before = baSlider.querySelector('.ba-before') as HTMLElement
-        if (before) before.style.width = pct + '%'
-        baHandle.style.left = pct + '%'
-      }
-      const startFromEvent = (clientX: number) => {
-        isDragging = true
-        updateSlider(clientX)
-      }
-      baSlider.addEventListener('mousedown', (e) => startFromEvent(e.clientX))
-      baSlider.addEventListener(
-        'touchstart',
-        (e) => {
-          startFromEvent(e.touches[0].clientX)
-        },
-        { passive: true }
-      )
-      document.addEventListener('mousemove', (e) => {
-        if (isDragging) updateSlider(e.clientX)
-      })
-      document.addEventListener('mouseup', () => {
-        isDragging = false
-      })
-      document.addEventListener('touchmove', (e) => {
-        if (isDragging) updateSlider(e.touches[0].clientX)
-      }, { passive: true })
-      document.addEventListener('touchend', () => {
-        isDragging = false
-      })
-    }
-
     // Counter animation (skip motion for prefers-reduced-motion)
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const counters = document.querySelectorAll('[data-target]')

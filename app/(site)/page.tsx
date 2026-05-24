@@ -8,6 +8,9 @@ import Navigation from '@/components/navigation'
 import HeroInteractions from '@/components/hero-interactions'
 import ContactForm from '@/components/contact-form'
 import ReviewsSection from '@/components/reviews-section'
+import DoctorsSection from '@/components/doctors-section'
+import TransformationShowcase from '@/components/transformation-showcase'
+import { getClinicSettings, getHeroSettings, getStatsSettings } from '@/lib/site-settings'
 
 // Fetch services from Supabase (with fallback)
 async function getServices(): Promise<Service[]> {
@@ -43,7 +46,13 @@ async function getDoctors(): Promise<Doctor[]> {
 }
 
 export default async function Home() {
-  const [services, doctors] = await Promise.all([getServices(), getDoctors()])
+  const [services, doctors, clinic, hero, stats] = await Promise.all([
+    getServices(),
+    getDoctors(),
+    getClinicSettings(),
+    getHeroSettings(),
+    getStatsSettings(),
+  ])
 
   return (
     <>
@@ -52,27 +61,21 @@ export default async function Home() {
         This is a demo website built by <strong>Namvi Digital</strong> — Bangkok&apos;s Premium Digital Solutions Partner
       </div>
 
-      <Navigation />
+      <Navigation clinicName={clinic.name} />
 
       <main>
         {/* Hero Section */}
         <section className="hero">
           <div className="hero-left">
             <div className="hero-decoration"></div>
-            <div className="hero-badge">Premium Dental Care</div>
-            <h1 className="hero-title">
-              Your Smile Deserves<br /><em>Excellence</em>
-            </h1>
-            <p className="hero-sub">
-              Modern dental care with a gentle, personalized approach. We blend advanced technology with warm hospitality.
-            </p>
-            <p className="hero-sub-th">
-              บริการทันตกรรมคุณภาพระดับพรีเมียม ผสมผสานเทคโนโลยีทันสมัยกับการดูแลอย่างอบอุ่น
-            </p>
+            <div className="hero-badge">{hero.badge}</div>
+            <h1 className="hero-title">{hero.title}</h1>
+            <p className="hero-sub">{hero.subtitle}</p>
+            <p className="hero-sub-th">{hero.subtitle_th}</p>
             <div className="hero-stars">
               <span className="stars">★★★★★</span>
-              <span className="rating">4.9</span>
-              <span className="review-count">2,400+ Happy Patients</span>
+              <span className="rating">{hero.rating}</span>
+              <span className="review-count">{hero.review_count} Happy Patients</span>
             </div>
             <div className="hero-actions">
               <button className="btn-primary" id="heroBookBtn">Book Appointment</button>
@@ -112,13 +115,14 @@ export default async function Home() {
 
         {/* Stats Bar */}
         <section className="stats-bar" id="statsBar">
+          <div className="page-container">
           <div className="stats-grid">
             <div className="stat-item">
-              <div className="stat-number" data-target="15" data-suffix="+">15+</div>
+              <div className="stat-number" data-target={String(stats.years)} data-suffix="+">{stats.years}+</div>
               <div className="stat-label">Years of Excellence</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number" data-target="2400" data-suffix="+">2400+</div>
+              <div className="stat-number" data-target={String(stats.patients)} data-suffix="+">{stats.patients}+</div>
               <div className="stat-label">Happy Patients</div>
             </div>
             <div className="stat-item">
@@ -132,153 +136,129 @@ export default async function Home() {
               <div className="stat-label">Specialist Doctors</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number" data-target="7" data-suffix=" days">7 days</div>
+              <div className="stat-number" data-target={String(stats.open_days)} data-suffix=" days">{stats.open_days} days</div>
               <div className="stat-label">Open Every Week</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number" data-target="4.9" data-suffix="" data-decimal="1">4.9</div>
+              <div className="stat-number" data-target={String(stats.rating)} data-suffix="" data-decimal="1">{stats.rating}</div>
               <div className="stat-label">Google Rating</div>
             </div>
           </div>
-        </section>
-
-        {/* Doctors Section */}
-        <section id="doctors">
-          <span className="section-label">Expert Team</span>
-          <h2 className="section-title scramble-title">Meet Our <span>Specialists</span></h2>
-          <p className="section-sub">
-            Our team of highly qualified dental professionals brings together decades of experience and a passion for creating beautiful smiles.
-          </p>
-          <div className="doctors-grid">
-            {doctors.map((doctor) => (
-              <div key={doctor.id} className="doctor-card">
-                <div className="doctor-avatar">{doctor.initials}</div>
-                <div className="doctor-name">{doctor.name}</div>
-                <div className="doctor-role">{doctor.specialty}</div>
-                <div className="doctor-detail">
-                  {doctor.qualifications}
-                  {doctor.bio && <><br />{doctor.bio}</>}
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 
+        <DoctorsSection doctors={doctors} />
+
         {/* Services Section */}
         <section id="services">
-          <span className="section-label">What We Offer</span>
-          <h2 className="section-title scramble-title">Premium <span>Services</span></h2>
-          <p className="section-sub">
-            Comprehensive dental care using the latest technology and techniques, delivered with comfort and care in mind.
-          </p>
-          <div className="services-grid">
-            {services.map((service) => (
-              <div key={service.id} className="service-card" data-category={service.category}>
-                <div className="service-icon">{service.icon}</div>
-                <div className="service-name">{service.name}</div>
-                {service.name_th && <div className="service-name-th">{service.name_th}</div>}
-                <div className="service-desc">{service.description}</div>
-                <div className="service-price-badge">{service.price_range || 'Contact Us'}</div>
-              </div>
-            ))}
+          <div className="page-container">
+            <header className="section-header section-header--wide">
+              <span className="section-label">What We Offer</span>
+              <h2 className="section-title scramble-title">Premium <span>Services</span></h2>
+              <p className="section-sub">
+                Comprehensive dental care using the latest technology and techniques, delivered with comfort and care in mind.
+              </p>
+            </header>
+            <div className="services-grid">
+              {services.map((service) => (
+                <div key={service.id} className="service-card" data-category={service.category}>
+                  <div className="service-icon">{service.icon}</div>
+                  <div className="service-name">{service.name}</div>
+                  {service.name_th && <div className="service-name-th">{service.name_th}</div>}
+                  <div className="service-desc">{service.description}</div>
+                  <div className="service-price-badge">{service.price_range || 'Contact Us'}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* Before / After Section */}
         <section className="before-after-section" id="beforeAfter">
-          <span className="section-label">Real Results</span>
-          <h2 className="section-title scramble-title">See the <span>Transformation</span></h2>
-          <p className="section-sub">Drag the handle to reveal the difference our treatments make.</p>
-          <div className="ba-slider-wrapper">
-            <div className="ba-slider" id="baSlider">
-              <div className="ba-after">
-                <div className="ba-img ba-img-after"></div>
-                <span className="ba-label ba-label-after">After</span>
-              </div>
-              <div className="ba-before">
-                <div className="ba-img ba-img-before"></div>
-                <span className="ba-label ba-label-before">Before</span>
-              </div>
-              <div className="ba-handle" id="baHandle">
-                <div className="ba-handle-line"></div>
-                <div className="ba-handle-circle">
-                  <svg viewBox="0 0 24 24" fill="white" width="16" height="16">
-                    <path d="M8 5l-1.41 1.41L11.17 11H2v2h9.17l-4.59 4.59L8 19l7-7z" />
-                  </svg>
-                  <svg viewBox="0 0 24 24" fill="white" width="16" height="16" style={{ transform: 'rotate(180deg)' }}>
-                    <path d="M8 5l-1.41 1.41L11.17 11H2v2h9.17l-4.59 4.59L8 19l7-7z" />
-                  </svg>
-                </div>
-                <div className="ba-handle-line"></div>
-              </div>
-            </div>
-            <div className="ba-caption">Teeth Whitening — Zoom Professional Treatment · 1 Hour Session</div>
+          <div className="page-container">
+            <header className="section-header section-header--center">
+              <span className="section-label">Real Results</span>
+              <h2 className="section-title scramble-title">See the <span>Transformation</span></h2>
+              <p className="section-sub">
+                Real clinical before-and-after examples — teeth cleaning, gum care, and bite alignment (same patient in each case).
+              </p>
+            </header>
+            <TransformationShowcase />
           </div>
         </section>
 
         {/* Reviews Section */}
         <section id="reviews">
-          <span className="section-label">Patient Stories</span>
-          <h2 className="section-title">What Our <span>Patients</span> Say</h2>
-          <p className="section-sub">Real experiences from our valued patients who trusted us with their smiles.</p>
+          <div className="page-container">
+            <header className="section-header section-header--center">
+              <span className="section-label">Patient Stories</span>
+              <h2 className="section-title">What Our <span>Patients</span> Say</h2>
+              <p className="section-sub">Real experiences from our valued patients who trusted us with their smiles.</p>
+            </header>
+          </div>
           <ReviewsSection />
         </section>
 
         {/* FAQ Section */}
         <section id="faq">
-          <span className="section-label">Common Questions</span>
-          <h2 className="section-title scramble-title">Frequently <span>Asked</span></h2>
-          <p className="section-sub">Everything you need to know before your first visit.</p>
-          <div className="faq-list">
-            {FAQ_ITEMS.map((item, i) => (
-              <div key={i} className="faq-item">
-                <button className="faq-question">
-                  {item.question} <span className="faq-icon">+</span>
-                </button>
-                <div className="faq-answer"><p>{item.answer}</p></div>
-              </div>
-            ))}
+          <div className="page-container page-container--narrow">
+            <header className="section-header section-header--center">
+              <span className="section-label">Common Questions</span>
+              <h2 className="section-title scramble-title">Frequently <span>Asked</span></h2>
+              <p className="section-sub">Everything you need to know before your first visit.</p>
+            </header>
+            <div className="faq-list">
+              {FAQ_ITEMS.map((item, i) => (
+                <div key={i} className="faq-item">
+                  <button className="faq-question">
+                    {item.question} <span className="faq-icon">+</span>
+                  </button>
+                  <div className="faq-answer"><p>{item.answer}</p></div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* Book / Contact Section */}
         <section id="book">
-          <span className="section-label">Get in Touch</span>
-          <h2 className="section-title">Book Your <span>Visit</span></h2>
-          <p className="section-sub">Ready to start your journey to a healthier, brighter smile? We&apos;re here to help.</p>
-          <div className="book-grid">
+          <div className="page-container">
+            <header className="section-header section-header--wide">
+              <span className="section-label">Get in Touch</span>
+              <h2 className="section-title">Book Your <span>Visit</span></h2>
+              <p className="section-sub">Ready to start your journey to a healthier, brighter smile? We&apos;re here to help.</p>
+            </header>
+            <div className="book-grid">
             <div className="book-info">
               <h3>Visit Our Clinic</h3>
               <p>Experience premium dental care in a comfortable, modern environment. We&apos;re conveniently located on Rama III Road with easy parking and BTS access.</p>
               <div className="contact-item">
                 <div className="contact-icon">📍</div>
-                <div>994 Rama III Road, Chong Nonsi, Yannawa<br />Bangkok 10120, Thailand</div>
+                <div>{clinic.address}</div>
               </div>
               <div className="contact-item">
                 <div className="contact-icon">📞</div>
-                <div>099-793-5635 (Thai &amp; English)</div>
+                <div>{clinic.phone}</div>
               </div>
               <div className="contact-item">
                 <div className="contact-icon">🕐</div>
-                <div>Open Daily: 10:00 AM – 8:00 PM<br />Including weekends &amp; holidays</div>
+                <div>{clinic.hours}</div>
               </div>
-              <a href="https://line.me/R/ti/p/@sound.dentalclinic" className="line-btn" target="_blank" rel="noreferrer">
+              <a href={`https://line.me/R/ti/p/${clinic.line.replace('@', '')}`} className="line-btn" target="_blank" rel="noreferrer">
                 <svg className="line-icon" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.349 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.281.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
                 </svg>
-                Chat on LINE · @sound.dentalclinic
+                Chat on LINE · {clinic.line}
               </a>
             </div>
             {/* Chatbot Widget (Client Component) */}
             <ChatbotWidget />
           </div>
 
-          {/* Contact Form */}
-          <div style={{ maxWidth: 640, margin: '3rem auto 0' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', textAlign: 'center' }}>
-              Or Send Us a Message
-            </h3>
+          <div className="book-contact">
+            <h3 className="book-contact-title">Or Send Us a Message</h3>
             <ContactForm />
+          </div>
           </div>
         </section>
       </main>
@@ -298,9 +278,11 @@ export default async function Home() {
 
       {/* Footer */}
       <footer>
-        <div className="footer-logo">Sound <span>Dental</span> Clinic</div>
-        <div>994 Rama III Rd, Bangkok · 099-793-5635 · Open daily 10 AM – 8 PM</div>
-        <div>© 2026 Sound Dental Clinic · Built with ❤️ by Namvi Digital</div>
+        <div className="footer-inner">
+          <div className="footer-logo">Sound <span>Dental</span> Clinic</div>
+          <div>994 Rama III Rd, Bangkok · 099-793-5635 · Open daily 10 AM – 8 PM</div>
+          <div>© 2026 Sound Dental Clinic · Built with ❤️ by Namvi Digital</div>
+        </div>
       </footer>
 
       {/* Booking Modal (Client Component) */}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import type { Service, Doctor } from '@/lib/types'
 
 interface BookingModalProps {
@@ -8,7 +8,8 @@ interface BookingModalProps {
   doctors: Doctor[]
 }
 
-type Step = 'service' | 'doctor' | 'datetime' | 'details' | 'confirm' | 'success'
+const STEPS = ['service', 'doctor', 'datetime', 'details', 'confirm'] as const
+type Step = (typeof STEPS)[number] | 'success'
 
 const TIME_SLOTS = [
   '10:00', '10:30', '11:00', '11:30',
@@ -32,31 +33,72 @@ export default function BookingModal({ services, doctors }: BookingModalProps) {
   const [patientPhone, setPatientPhone] = useState('')
   const [notes, setNotes] = useState('')
 
-  useEffect(() => {
-    const handler = () => {
-      setIsOpen(true)
-      setStep('service')
-      setError('')
-    }
-    document.addEventListener('openBookingModal', handler)
-    return () => document.removeEventListener('openBookingModal', handler)
-  }, [])
-
-  const close = () => {
-    setIsOpen(false)
+  const resetForm = useCallback(() => {
     setStep('service')
     setError('')
-  }
+    setSelectedService(null)
+    setSelectedDoctor(null)
+    setSelectedDate('')
+    setSelectedTime('')
+    setPatientName('')
+    setPatientEmail('')
+    setPatientPhone('')
+    setNotes('')
+  }, [])
 
-  const getMinDate = () => {
-    const d = new Date()
-    return d.toISOString().split('T')[0]
-  }
+  const close = useCallback(() => {
+    setIsOpen(false)
+    resetForm()
+  }, [resetForm])
+
+  useEffect(() => {
+    const open = () => {
+      setIsOpen(true)
+      resetForm()
+    }
+    document.addEventListener('openBookingModal', open)
+    return () => document.removeEventListener('openBookingModal', open)
+  }, [resetForm])
+
+  useEffect(() => {
+    if (!isOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [isOpen])
+
+  const stepIndex = step === 'success' ? STEPS.length : STEPS.indexOf(step as (typeof STEPS)[number])
+
+  const getMinDate = () => new Date().toISOString().split('T')[0]
 
   const getMaxDate = () => {
     const d = new Date()
     d.setDate(d.getDate() + 60)
     return d.toISOString().split('T')[0]
+  }
+
+  const canContinue = () => {
+    if (step === 'service') return !!selectedService
+    if (step === 'doctor') return !!selectedDoctor
+    if (step === 'datetime') return !!selectedDate && !!selectedTime
+    if (step === 'details') return !!patientName.trim() && !!patientEmail.trim()
+    return true
+  }
+
+  const goNext = () => {
+    if (step === 'service') setStep('doctor')
+    else if (step === 'doctor') setStep('datetime')
+    else if (step === 'datetime') setStep('details')
+    else if (step === 'details') setStep('confirm')
+  }
+
+  const goBack = () => {
+    if (step === 'doctor') setStep('service')
+    else if (step === 'datetime') setStep('doctor')
+    else if (step === 'details') setStep('datetime')
+    else if (step === 'confirm') setStep('details')
   }
 
   const submit = async () => {
@@ -79,8 +121,8 @@ export default function BookingModal({ services, doctors }: BookingModalProps) {
           notes: notes || undefined,
         }),
       })
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const data = await res.json()
         throw new Error(data.error || 'Booking failed. Please try again.')
       }
       setStep('success')
@@ -93,260 +135,309 @@ export default function BookingModal({ services, doctors }: BookingModalProps) {
 
   if (!isOpen) return null
 
-  return (
-    <div className="modal-overlay active" onClick={(e) => e.target === e.currentTarget && close()}>
-      <div className="booking-modal">
-        {/* Header */}
-        <div className="modal-header">
-          <div>
-            <div className="modal-title">Book Appointment</div>
-            <div className="modal-subtitle">Sound Dental Clinic · Bangkok</div>
-          </div>
-          <button className="modal-close" onClick={close} aria-label="Close">✕</button>
-        </div>
+  const formattedDate = selectedDate
+    ? new Date(selectedDate + 'T12:00:00').toLocaleDateString('en-GB', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : ''
 
-        {/* Steps */}
+  return (
+    <div
+      className="booking-overlay active"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="booking-title"
+      onClick={(e) => e.target === e.currentTarget && close()}
+    >
+      <div className="booking-modal">
+        <header className="booking-header">
+          <div className="booking-header-content">
+            <h2 id="booking-title">Book Appointment</h2>
+            <p>Sound Dental Clinic · Bangkok</p>
+          </div>
+          <button type="button" className="booking-close" onClick={close} aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeLinecap="round" />
+            </svg>
+          </button>
+        </header>
+
         {step !== 'success' && (
-          <div className="booking-steps">
-            {(['service', 'doctor', 'datetime', 'details', 'confirm'] as Step[]).map((s, i) => (
-              <div
-                key={s}
-                className={`step ${step === s ? 'active' : ''} ${
-                  ['service', 'doctor', 'datetime', 'details', 'confirm'].indexOf(step) > i ? 'completed' : ''
-                }`}
-              >
-                <div className="step-dot">{['service', 'doctor', 'datetime', 'details', 'confirm'].indexOf(step) > i ? '✓' : i + 1}</div>
-                <div className="step-label">{['Service', 'Doctor', 'Date & Time', 'Details', 'Confirm'][i]}</div>
-              </div>
+          <div className="booking-progress" aria-label="Booking progress">
+            {STEPS.map((s, i) => (
+              <span key={s} style={{ display: 'contents' }}>
+                <span className="progress-step">
+                  <span
+                    className={`progress-dot${step === s ? ' active' : ''}${
+                      stepIndex > i ? ' completed' : ''
+                    }`}
+                  >
+                    <span>{i + 1}</span>
+                  </span>
+                </span>
+                {i < STEPS.length - 1 && (
+                  <span className={`progress-line${stepIndex > i ? ' completed' : ''}`} />
+                )}
+              </span>
             ))}
           </div>
         )}
 
-        {/* Step Content */}
-        <div className="modal-body">
-          {/* Step 1: Service */}
-          {step === 'service' && (
-            <div className="step-content">
-              <h3 className="step-title">What do you need?</h3>
+        <div className="booking-body">
+          {/* Service */}
+          <div className={`booking-step${step === 'service' ? ' active' : ''}`}>
+            <h3 className="step-title">What do you need?</h3>
+            <p className="step-subtitle">Choose a treatment to get started</p>
+            {services.length === 0 ? (
+              <p className="booking-empty">No services available. Please contact the clinic.</p>
+            ) : (
               <div className="service-options">
                 {services.map((svc) => (
-                  <div
+                  <button
                     key={svc.id}
-                    className={`service-option ${selectedService?.id === svc.id ? 'selected' : ''}`}
+                    type="button"
+                    className={`service-option${selectedService?.id === svc.id ? ' selected' : ''}`}
                     onClick={() => setSelectedService(svc)}
                   >
-                    <span className="option-icon">{svc.icon}</span>
-                    <div>
-                      <div className="option-name">{svc.name}</div>
-                      {svc.name_th && <div className="option-name-th">{svc.name_th}</div>}
-                      {svc.price_range && <div className="option-price">{svc.price_range}</div>}
-                    </div>
-                  </div>
+                    <span className="service-option-icon">{svc.icon}</span>
+                    <span className="service-option-name">{svc.name}</span>
+                    {svc.name_th && <span className="service-option-name-th">{svc.name_th}</span>}
+                    {svc.price_range && <span className="service-option-price">{svc.price_range}</span>}
+                  </button>
                 ))}
               </div>
-              <button
-                className="btn-primary"
-                onClick={() => setStep('doctor')}
-                disabled={!selectedService}
-              >
-                Continue →
-              </button>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Step 2: Doctor */}
-          {step === 'doctor' && (
-            <div className="step-content">
-              <h3 className="step-title">Choose your doctor</h3>
-              <div className="doctor-options">
-                {doctors.map((doc) => (
-                  <div
-                    key={doc.id}
-                    className={`doctor-option ${selectedDoctor?.id === doc.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedDoctor(doc)}
-                  >
-                    <div className="option-avatar">{doc.initials}</div>
-                    <div>
-                      <div className="option-name">{doc.name}</div>
-                      <div className="option-specialty">{doc.specialty}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep('service')}>← Back</button>
-                <button className="btn-primary" onClick={() => setStep('datetime')} disabled={!selectedDoctor}>Continue →</button>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Date & Time */}
-          {step === 'datetime' && (
-            <div className="step-content">
-              <h3 className="step-title">Pick a date &amp; time</h3>
-              <div className="datetime-grid">
-                <div className="form-group">
-                  <label className="form-label">Preferred Date</label>
-                  <input
-                    type="date"
-                    className="form-input"
-                    value={selectedDate}
-                    min={getMinDate()}
-                    max={getMaxDate()}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                  />
-                </div>
-                {selectedDate && (
-                  <div className="form-group">
-                    <label className="form-label">Preferred Time</label>
-                    <div className="time-grid">
-                      {TIME_SLOTS.map((t) => (
-                        <button
-                          key={t}
-                          className={`time-slot ${selectedTime === t ? 'selected' : ''}`}
-                          onClick={() => setSelectedTime(t)}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep('doctor')}>← Back</button>
+          {/* Doctor */}
+          <div className={`booking-step${step === 'doctor' ? ' active' : ''}`}>
+            <h3 className="step-title">Choose your doctor</h3>
+            <p className="step-subtitle">Or pick the first available specialist</p>
+            <div className="doctor-options">
+              {doctors.map((doc) => (
                 <button
-                  className="btn-primary"
-                  onClick={() => setStep('details')}
-                  disabled={!selectedDate || !selectedTime}
+                  key={doc.id}
+                  type="button"
+                  className={`doctor-option${selectedDoctor?.id === doc.id ? ' selected' : ''}`}
+                  onClick={() => setSelectedDoctor(doc)}
                 >
-                  Continue →
+                  <span className="doctor-option-avatar">{doc.initials}</span>
+                  <span className="doctor-option-info">
+                    <span className="doctor-option-name">{doc.name}</span>
+                    {doc.specialty && <span className="doctor-option-specialty">{doc.specialty}</span>}
+                    {doc.id === 'any' && (
+                      <span className="doctor-option-avail">Fastest available slot</span>
+                    )}
+                  </span>
+                  <span className="doctor-option-check" aria-hidden />
                 </button>
-              </div>
+              ))}
             </div>
-          )}
+          </div>
 
-          {/* Step 4: Patient Details */}
-          {step === 'details' && (
-            <div className="step-content">
-              <h3 className="step-title">Your details</h3>
-              <div className="details-form">
-                <div className="form-group">
-                  <label className="form-label">Full Name *</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="e.g. John Smith / สมชาย ใจดี"
-                    value={patientName}
-                    onChange={(e) => setPatientName(e.target.value)}
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Email *</label>
-                  <input
-                    type="email"
-                    className="form-input"
-                    placeholder="your@email.com"
-                    value={patientEmail}
-                    onChange={(e) => setPatientEmail(e.target.value)}
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Phone</label>
-                  <input
-                    type="tel"
-                    className="form-input"
-                    placeholder="0XX-XXX-XXXX"
-                    value={patientPhone}
-                    onChange={(e) => setPatientPhone(e.target.value)}
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Notes (optional)</label>
-                  <textarea
-                    className="form-input"
-                    rows={3}
-                    placeholder="Any special requests or dental concerns?"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep('datetime')}>← Back</button>
-                <button
-                  className="btn-primary"
-                  onClick={() => setStep('confirm')}
-                  disabled={!patientName || !patientEmail}
-                >
-                  Review →
-                </button>
-              </div>
+          {/* Date & time */}
+          <div className={`booking-step${step === 'datetime' ? ' active' : ''}`}>
+            <h3 className="step-title">Pick a date &amp; time</h3>
+            <p className="step-subtitle">We&apos;re open daily 10:00 AM – 8:00 PM</p>
+            <div className="form-group">
+              <label className="form-label" htmlFor="booking-date">
+                Preferred date
+              </label>
+              <input
+                id="booking-date"
+                type="date"
+                className="form-input"
+                value={selectedDate}
+                min={getMinDate()}
+                max={getMaxDate()}
+                onChange={(e) => {
+                  setSelectedDate(e.target.value)
+                  setSelectedTime('')
+                }}
+              />
             </div>
-          )}
+            {selectedDate && (
+              <div className="form-group">
+                <p className="time-slots-title">Available times</p>
+                <div className="time-slots">
+                  {TIME_SLOTS.map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      className={`time-slot${selectedTime === t ? ' selected' : ''}`}
+                      onClick={() => setSelectedTime(t)}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
-          {/* Step 5: Confirm */}
-          {step === 'confirm' && (
-            <div className="step-content">
-              <h3 className="step-title">Confirm your appointment</h3>
-              <div className="confirm-summary">
-                <div className="summary-row">
-                  <span className="summary-label">Service</span>
-                  <span className="summary-value">{selectedService?.icon} {selectedService?.name}</span>
-                </div>
-                <div className="summary-row">
-                  <span className="summary-label">Doctor</span>
-                  <span className="summary-value">{selectedDoctor?.name}</span>
-                </div>
-                <div className="summary-row">
-                  <span className="summary-label">Date</span>
-                  <span className="summary-value">{new Date(selectedDate + 'T00:00').toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                </div>
-                <div className="summary-row">
-                  <span className="summary-label">Time</span>
-                  <span className="summary-value">{selectedTime}</span>
-                </div>
-                <div className="summary-row">
-                  <span className="summary-label">Name</span>
-                  <span className="summary-value">{patientName}</span>
-                </div>
-                <div className="summary-row">
-                  <span className="summary-label">Email</span>
-                  <span className="summary-value">{patientEmail}</span>
-                </div>
+          {/* Details */}
+          <div className={`booking-step${step === 'details' ? ' active' : ''}`}>
+            <h3 className="step-title">Your details</h3>
+            <p className="step-subtitle">We&apos;ll send confirmation to your email</p>
+            <div className="form-group">
+              <label className="form-label" htmlFor="booking-name">
+                Full name *
+              </label>
+              <input
+                id="booking-name"
+                type="text"
+                className="form-input"
+                placeholder="e.g. John Smith"
+                value={patientName}
+                onChange={(e) => setPatientName(e.target.value)}
+                autoComplete="name"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="booking-email">
+                Email *
+              </label>
+              <input
+                id="booking-email"
+                type="email"
+                className="form-input"
+                placeholder="your@email.com"
+                value={patientEmail}
+                onChange={(e) => setPatientEmail(e.target.value)}
+                autoComplete="email"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="booking-phone">
+                Phone
+              </label>
+              <input
+                id="booking-phone"
+                type="tel"
+                className="form-input"
+                placeholder="0XX-XXX-XXXX"
+                value={patientPhone}
+                onChange={(e) => setPatientPhone(e.target.value)}
+                autoComplete="tel"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="booking-notes">
+                Notes (optional)
+              </label>
+              <textarea
+                id="booking-notes"
+                className="form-input"
+                rows={3}
+                placeholder="Any concerns or special requests?"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Confirm */}
+          <div className={`booking-step${step === 'confirm' ? ' active' : ''}`}>
+            <h3 className="step-title">Confirm your appointment</h3>
+            <p className="step-subtitle">Review before submitting</p>
+            <div className="confirmation-details">
+              <div className="confirmation-row">
+                <span className="confirmation-label">Service</span>
+                <span className="confirmation-value">
+                  {selectedService?.icon} {selectedService?.name}
+                </span>
               </div>
-              {error && <div className="error-message">{error}</div>}
-              <div className="step-actions">
-                <button className="btn-secondary" onClick={() => setStep('details')} disabled={isLoading}>← Back</button>
-                <button className="btn-primary" onClick={submit} disabled={isLoading}>
-                  {isLoading ? 'Saving…' : '✓ Confirm Booking'}
-                </button>
+              <div className="confirmation-row">
+                <span className="confirmation-label">Doctor</span>
+                <span className="confirmation-value">{selectedDoctor?.name}</span>
+              </div>
+              <div className="confirmation-row">
+                <span className="confirmation-label">Date</span>
+                <span className="confirmation-value">{formattedDate}</span>
+              </div>
+              <div className="confirmation-row">
+                <span className="confirmation-label">Time</span>
+                <span className="confirmation-value">{selectedTime}</span>
+              </div>
+              <div className="confirmation-row">
+                <span className="confirmation-label">Name</span>
+                <span className="confirmation-value">{patientName}</span>
+              </div>
+              <div className="confirmation-row">
+                <span className="confirmation-label">Email</span>
+                <span className="confirmation-value">{patientEmail}</span>
               </div>
             </div>
-          )}
+            {error && (
+              <div className="booking-error" role="alert">
+                {error}
+              </div>
+            )}
+          </div>
 
           {/* Success */}
-          {step === 'success' && (
-            <div className="step-content success-content">
-              <div className="success-icon">🎉</div>
-              <h3 className="step-title">Booking Confirmed!</h3>
-              <p>Thank you, <strong>{patientName}</strong>! Your appointment has been saved.</p>
-              <p>
-                <strong>{selectedService?.name}</strong> with <strong>{selectedDoctor?.name}</strong><br />
-                {new Date(selectedDate + 'T00:00').toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {selectedTime}
-              </p>
-              <p style={{ marginTop: '1rem', color: 'var(--mid)', fontSize: '14px' }}>
-                Our team will confirm your appointment via email at <strong>{patientEmail}</strong> within 1 business hour.
-              </p>
-              <p style={{ marginTop: '0.5rem', color: 'var(--mid)', fontSize: '14px' }}>
-                Questions? Chat on LINE: <strong>@sound.dentalclinic</strong> or call <strong>099-793-5635</strong>
-              </p>
-              <button className="btn-primary" style={{ marginTop: '1.5rem' }} onClick={close}>
-                Close
-              </button>
+          <div className={`booking-step${step === 'success' ? ' active' : ''}`}>
+            <div className="confirmation-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M5 13l4 4L19 7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
-          )}
+            <h3 className="confirmation-title">Booking received!</h3>
+            <p className="confirmation-subtitle">
+              Thank you, {patientName}. We&apos;ll confirm by email within one business hour.
+            </p>
+            <div className="confirmation-details">
+              <div className="confirmation-row">
+                <span className="confirmation-label">Service</span>
+                <span className="confirmation-value">{selectedService?.name}</span>
+              </div>
+              <div className="confirmation-row">
+                <span className="confirmation-label">Doctor</span>
+                <span className="confirmation-value">{selectedDoctor?.name}</span>
+              </div>
+              <div className="confirmation-row">
+                <span className="confirmation-label">When</span>
+                <span className="confirmation-value">
+                  {formattedDate} · {selectedTime}
+                </span>
+              </div>
+            </div>
+            <p className="form-note" style={{ textAlign: 'center', marginTop: 8 }}>
+              Questions? LINE <strong>@sound.dentalclinic</strong> or call <strong>099-793-5635</strong>
+            </p>
+          </div>
         </div>
+
+        {step !== 'success' ? (
+          <footer className="booking-footer">
+            {step !== 'service' && (
+              <button type="button" className="btn-back" onClick={goBack} disabled={isLoading}>
+                Back
+              </button>
+            )}
+            <button
+              type="button"
+              className="btn-next"
+              disabled={!canContinue() || isLoading}
+              onClick={step === 'confirm' ? submit : goNext}
+            >
+              {isLoading
+                ? 'Saving…'
+                : step === 'confirm'
+                  ? 'Confirm booking'
+                  : 'Continue'}
+            </button>
+          </footer>
+        ) : (
+          <footer className="booking-footer">
+            <button type="button" className="btn-next" onClick={close}>
+              Done
+            </button>
+          </footer>
+        )}
       </div>
     </div>
   )

@@ -1,12 +1,18 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { getSupabasePublishableKey, getSupabaseSecretKey, getSupabaseUrl } from '@/lib/supabase/env'
 
 export async function createClient() {
   const cookieStore = await cookies()
+  const url = getSupabaseUrl()
+  const key = getSupabasePublishableKey()
+  if (!url || !key) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL or publishable/anon key')
+  }
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    url,
+    key,
     {
       cookies: {
         getAll() {
@@ -18,7 +24,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             )
           } catch {
-            // Server Component — cookie setting is best-effort
+            // setAll from a Server Component — safe to ignore when middleware refreshes sessions
           }
         },
       },
@@ -26,12 +32,23 @@ export async function createClient() {
   )
 }
 
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { isSupabaseConfigured } from '@/lib/auth/admin'
+
 // Service-role client for admin operations (bypasses RLS)
 export function createAdminClient() {
-  const { createClient } = require('@supabase/supabase-js')
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  if (!isSupabaseConfigured()) {
+    throw new Error('SUPABASE_NOT_CONFIGURED')
+  }
+
+  const secretKey = getSupabaseSecretKey()
+  if (!secretKey) {
+    throw new Error('SUPABASE_NOT_CONFIGURED')
+  }
+
+  return createSupabaseClient(
+    getSupabaseUrl()!,
+    secretKey,
     {
       auth: {
         autoRefreshToken: false,
