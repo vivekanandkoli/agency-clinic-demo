@@ -25,7 +25,7 @@ export default function BookingsTable({ initialBookings }: { initialBookings: Bo
       search === '' ||
       b.patient_name.toLowerCase().includes(search.toLowerCase()) ||
       b.patient_email.toLowerCase().includes(search.toLowerCase()) ||
-      (b.services?.name ?? '').toLowerCase().includes(search.toLowerCase())
+      (b.services?.name ?? b.service_name ?? '').toLowerCase().includes(search.toLowerCase())
     return matchesFilter && matchesSearch
   })
 
@@ -129,8 +129,8 @@ export default function BookingsTable({ initialBookings }: { initialBookings: Bo
                         <div style={{ fontSize: 12, color: 'var(--adm-muted)' }}>{b.patient_phone}</div>
                       )}
                     </td>
-                    <td>{b.services?.name ?? '—'}</td>
-                    <td>{b.doctors?.name ?? '—'}</td>
+                    <td>{b.services?.name ?? b.service_name ?? '—'}</td>
+                    <td>{b.doctors?.name ?? b.doctor_name ?? '—'}</td>
                     <td style={{ whiteSpace: 'nowrap' }}>
                       <div>{b.appointment_date}</div>
                       <div style={{ fontSize: 12, color: 'var(--adm-muted)' }}>{b.appointment_time}</div>
