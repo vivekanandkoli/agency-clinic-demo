@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import TrackingScripts from '@/components/tracking-scripts'
 
 export const metadata: Metadata = {
-  title: 'Sound Dental Clinic — Premium Dental Care in Bangkok',
+  title: 'Smile Bangkok Dental — Premium Dental Care in Bangkok',
   description:
     'Premium dental clinic in Bangkok offering teeth whitening, dental implants, Invisalign, and comprehensive dental care.',
   keywords: 'dental clinic Bangkok, teeth whitening, dental implants, Invisalign',
@@ -23,7 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        {children}
+        <TrackingScripts />
+      </body>
     </html>
   )
 }

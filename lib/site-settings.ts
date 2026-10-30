@@ -30,13 +30,13 @@ export interface StatsSettings {
 }
 
 const DEFAULT_CLINIC: ClinicSettings = {
-  name: 'Sound Dental Clinic',
-  name_th: 'คลินิกทันตกรรมซาวด์',
+  name: 'Smile Bangkok Dental',
+  name_th: 'คลินิกทันตกรรมสไมล์ บางกอก',
   tagline: 'Premium Dental Care',
-  phone: '099-793-5635',
-  email: 'sound.dentalclinic@gmail.com',
-  line: '@sound.dentalclinic',
-  address: '994, 996, 998 Rama III Road, Yan Nawa, Bangkok 10120',
+  phone: '02-000-0000',
+  email: 'hello@smilebangkok-demo.example',
+  line: '@smilebkk.demo',
+  address: '123 Sukhumvit Road (demo address), Khlong Toei, Bangkok 10110',
   hours: 'Open daily until 8:00 PM',
 }
 

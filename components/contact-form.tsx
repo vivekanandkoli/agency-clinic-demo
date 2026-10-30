@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { getAttribution, trackEvent } from '@/lib/tracking'
 
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
@@ -16,7 +17,7 @@ export default function ContactForm() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, attribution: getAttribution() }),
       })
 
       if (!res.ok) {
@@ -24,6 +25,7 @@ export default function ContactForm() {
         throw new Error(data.error ?? 'Submission failed')
       }
 
+      trackEvent('contact_submitted')
       setStatus('success')
       setForm({ name: '', email: '', phone: '', message: '' })
     } catch (err) {

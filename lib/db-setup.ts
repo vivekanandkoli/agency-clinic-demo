@@ -6,6 +6,7 @@ const MIGRATION_FILES = [
   '001_initial_schema.sql',
   '002_seed_data.sql',
   '003_site_settings_and_samples.sql',
+  '004_ad_attribution.sql',
 ]
 
 export function getDatabaseUrl(): string | null {

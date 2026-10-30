@@ -3,21 +3,21 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createAdminClient } from '@/lib/supabase/server'
 import type { ChatRequest } from '@/lib/types'
 
-const SYSTEM_PROMPT = `You are a friendly dental clinic assistant for Sound Dental Clinic (คลินิกทันตกรรมซาวด์) in Bangkok, Thailand.
+const SYSTEM_PROMPT = `You are a friendly dental clinic assistant for Smile Bangkok Dental (คลินิกทันตกรรมสไมล์ บางกอก) in Bangkok, Thailand.
 
 Key clinic info:
-- Address: 994, 996, 998 Rama III Road, Yan Nawa, Bangkok 10120
-- Phone: 099-793-5635
-- LINE ID: @sound.dentalclinic
-- Email: sound.dentalclinic@gmail.com
+- Address: 123 Sukhumvit Road (demo address), Khlong Toei, Bangkok 10110
+- Phone: 02-000-0000
+- LINE ID: @smilebkk.demo
+- Email: hello@smilebangkok-demo.example
 - Hours: Open daily, closes 8:00 PM
 - Google Rating: 4.9 stars, 2,400+ patients
 
 Services: Teeth whitening (ฟอกสีฟัน), Orthodontics/braces (จัดฟัน), Invisalign, Dental implants (รากฟันเทียม), General dentistry, Crowns/bridges/veneers, Periodontics, Oral surgery, Root canal.
 
-Doctors: Dr. Nattapong (Implants & Prosthodontics, 15+ years), Dr. Pimnara (Orthodontics & Invisalign Diamond Provider), Dr. Kritsada (Endodontics & Root Canal). All trained at top Thai universities.
+Doctors: Dr. Anan (Implants & Prosthodontics, 15+ years), Dr. Kanya (Orthodontics & Invisalign Diamond Provider), Dr. Somchai (Endodontics & Root Canal). All trained at top Thai universities.
 
-For booking: Encourage them to click the "Book Appointment" button on the website, or contact via LINE @sound.dentalclinic or call 099-793-5635.
+For booking: Encourage them to click the "Book Appointment" button on the website, or contact via LINE @smilebkk.demo or call 02-000-0000.
 
 Respond in the same language the user writes in. If Thai, reply in Thai. If English, reply in English. Keep replies concise and friendly. Max 3-4 sentences per reply. Use occasional emoji. Never make up prices — say "Please call us for pricing" or "ราคาขึ้นอยู่กับการตรวจ".`
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
-        { reply: 'Chat is currently unavailable. Please call us at 099-793-5635 or contact via LINE: @sound.dentalclinic' },
+        { reply: 'Chat is currently unavailable. Please call us at 02-000-0000 or contact via LINE: @smilebkk.demo' },
         { status: 200 }
       )
     }
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
     const recentHistory = history.slice(-20)
 
     const response = await client.messages.create({
-      model: 'claude-haiku-4-20250514',
+      model: process.env.ANTHROPIC_MODEL || 'claude-haiku-5-5',
       max_tokens: 400,
       system: SYSTEM_PROMPT,
       messages: recentHistory.map((m) => ({
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Chat API error:', error)
     return NextResponse.json(
-      { reply: "Sorry, I'm experiencing technical difficulties. Please call us at 099-793-5635 or chat via LINE: @sound.dentalclinic" },
+      { reply: "Sorry, I'm experiencing technical difficulties. Please call us at 02-000-0000 or chat via LINE: @smilebkk.demo" },
       { status: 200 }
     )
   }

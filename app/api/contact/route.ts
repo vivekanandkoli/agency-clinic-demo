@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import type { ContactRequest } from '@/lib/types'
+import { isMissingAttributionColumn, sanitizeAttribution } from '@/lib/attribution-server'
 
 export async function POST(request: NextRequest) {
   try {
     const body: ContactRequest = await request.json()
-    const { name, email, phone, message } = body
+    const { name, email, phone, message, attribution } = body
 
     // Validate required fields
     if (!name?.trim() || !email?.trim() || !message?.trim()) {
@@ -27,17 +28,20 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = createAdminClient()
-    const { data, error } = await supabase
-      .from('contact_submissions')
-      .insert({
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone?.trim() || null,
-        message: message.trim(),
-      })
-      .select()
-      .single()
+    const row = {
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      phone: phone?.trim() || null,
+      message: message.trim(),
+    }
+    const insert = (r: Record<string, unknown>) =>
+      supabase.from('contact_submissions').insert(r).select().single()
 
+    let { data, error } = await insert({ ...row, ...sanitizeAttribution(attribution) })
+    if (error && isMissingAttributionColumn(error)) {
+      // Database not migrated yet (004_ad_attribution.sql) — still save the message.
+      ;({ data, error } = await insert(row))
+    }
     if (error) throw error
 
     return NextResponse.json(

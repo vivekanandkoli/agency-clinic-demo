@@ -1,7 +1,11 @@
+import { randomBytes } from 'crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getAdminEmails } from '@/lib/auth/admin'
 
-const DEFAULT_DEMO_PASSWORD = 'SoundDental123!'
+/** One-time random password, shown once by the setup screen when ADMIN_INITIAL_PASSWORD is not set. */
+function generatePassword() {
+  return randomBytes(12).toString('base64url')
+}
 
 export async function ensureAdminUser(supabase: SupabaseClient): Promise<{
   email: string
@@ -12,7 +16,7 @@ export async function ensureAdminUser(supabase: SupabaseClient): Promise<{
   if (emails.length === 0) return null
 
   const email = emails[0]
-  const password = process.env.ADMIN_INITIAL_PASSWORD ?? DEFAULT_DEMO_PASSWORD
+  const password = process.env.ADMIN_INITIAL_PASSWORD || generatePassword()
 
   const { data: listData, error: listError } = await supabase.auth.admin.listUsers({
     perPage: 200,

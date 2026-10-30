@@ -3,21 +3,21 @@
 import { useState, useRef, useEffect, useId } from 'react'
 import type { ChatMessage } from '@/lib/types'
 
-const SYSTEM_PROMPT = `You are a friendly dental clinic assistant for Sound Dental Clinic (คลินิกทันตกรรมซาวด์) in Bangkok, Thailand.
+const SYSTEM_PROMPT = `You are a friendly dental clinic assistant for Smile Bangkok Dental (คลินิกทันตกรรมสไมล์ บางกอก) in Bangkok, Thailand.
 
 Key clinic info:
-- Address: 994, 996, 998 Rama III Road, Yan Nawa, Bangkok 10120
-- Phone: 099-793-5635
-- LINE ID: @sound.dentalclinic
-- Email: sound.dentalclinic@gmail.com
+- Address: 123 Sukhumvit Road (demo address), Khlong Toei, Bangkok 10110
+- Phone: 02-000-0000
+- LINE ID: @smilebkk.demo
+- Email: hello@smilebangkok-demo.example
 - Hours: Open daily, closes 8:00 PM
 - Google Rating: 4.9 stars, 2,400+ patients
 
 Services: Teeth whitening (ฟอกสีฟัน), Orthodontics/braces (จัดฟัน), Invisalign, Dental implants (รากฟันเทียม), General dentistry, Crowns/bridges/veneers, Periodontics, Oral surgery, Root canal.
 
-Doctors: Dr. Nattapong (Implants/Prosthodontics), Dr. Pimnara (Orthodontics/Invisalign), Dr. Kritsada (Endodontics/Root Canal). All trained at top Thai universities.
+Doctors: Dr. Anan (Implants/Prosthodontics), Dr. Kanya (Orthodontics/Invisalign), Dr. Somchai (Endodontics/Root Canal). All trained at top Thai universities.
 
-For booking: Tell them to click the "Book Appointment" button on the page, or contact via LINE @sound.dentalclinic or call 099-793-5635.
+For booking: Tell them to click the "Book Appointment" button on the page, or contact via LINE @smilebkk.demo or call 02-000-0000.
 
 Respond in the same language the user writes in. If Thai, reply in Thai. If English, reply in English. Keep replies concise and friendly. Max 3-4 sentences per reply. Use occasional emoji. Never make up prices — say "Please call us for pricing" or "ราคาขึ้นอยู่กับการตรวจ".`
 
@@ -43,7 +43,7 @@ export default function ChatbotWidget() {
   useEffect(() => {
     // Show initial greeting after a delay
     setTimeout(() => {
-      addMessage('สวัสดีค่ะ! Welcome to Sound Dental Clinic 🦷<br><br>How can I help you today? / วันนี้ให้ช่วยอะไรได้บ้างคะ?', 'bot')
+      addMessage('สวัสดีค่ะ! Welcome to Smile Bangkok Dental 🦷<br><br>How can I help you today? / วันนี้ให้ช่วยอะไรได้บ้างคะ?', 'bot')
       setQuickRepliesShown(true)
     }, 600)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,8 +85,8 @@ export default function ChatbotWidget() {
       const isThaiMessage = /[\u0E00-\u0E7F]/.test(userText)
       addMessage(
         isThaiMessage
-          ? 'ขออภัยค่ะ เกิดข้อผิดพลาดชั่วคราว กรุณาโทรหาเราที่ 099-793-5635 หรือแชทผ่าน LINE: @sound.dentalclinic ค่ะ'
-          : "Sorry, I'm experiencing technical difficulties. Please call us at 099-793-5635 or chat via LINE: @sound.dentalclinic",
+          ? 'ขออภัยค่ะ เกิดข้อผิดพลาดชั่วคราว กรุณาโทรหาเราที่ 02-000-0000 หรือแชทผ่าน LINE: @smilebkk.demo ค่ะ'
+          : "Sorry, I'm experiencing technical difficulties. Please call us at 02-000-0000 or chat via LINE: @smilebkk.demo",
         'bot'
       )
     }
@@ -105,7 +105,7 @@ export default function ChatbotWidget() {
       setIsTyping(true)
       setTimeout(() => {
         setIsTyping(false)
-        addMessage('Great! To book an appointment, click the <strong>Book Appointment</strong> button at the top of the page. 📅<br><br>Or contact us directly:<br>📞 099-793-5635<br>💬 LINE: @sound.dentalclinic', 'bot')
+        addMessage('Great! To book an appointment, click the <strong>Book Appointment</strong> button at the top of the page. 📅<br><br>Or contact us directly:<br>📞 02-000-0000<br>💬 LINE: @smilebkk.demo', 'bot')
         document.dispatchEvent(new CustomEvent('openBookingModal'))
       }, 600)
       return
@@ -120,7 +120,7 @@ export default function ChatbotWidget() {
         <div className="chatbot-header">
           <div className="chatbot-avatar">🦷</div>
           <div className="chatbot-info">
-            <div className="chatbot-name">Sound Dental Assistant</div>
+            <div className="chatbot-name">Smile Bangkok Assistant</div>
             <div className="chatbot-status">
               <span className="status-dot"></span> Online
             </div>

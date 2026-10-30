@@ -1,5 +1,5 @@
 -- =============================================
--- Sound Dental Clinic - Seed Data
+-- Smile Bangkok Dental - Seed Data
 -- Run AFTER 001_initial_schema.sql
 -- =============================================
 
@@ -20,10 +20,10 @@ ON CONFLICT (slug) DO NOTHING;
 -- =============================================
 INSERT INTO doctors (slug, initials, name, name_th, specialty, specialty_th, qualifications, experience_years, bio, availability) VALUES
   (
-    'dr-nattapong',
-    'NS',
-    'Dr. Nattapong Srisawat',
-    'ทพ. ณัฐพงศ์ ศรีสวัสดิ์',
+    'dr-anan',
+    'AW',
+    'Dr. Anan Wongsakul',
+    'ทพ. อนันต์ วงศ์สกุล',
     'Implants & Prosthodontics',
     'รากฟันเทียมและทันตกรรมประดิษฐ์',
     'D.D.S., M.Sc. in Prosthodontics',
@@ -32,10 +32,10 @@ INSERT INTO doctors (slug, initials, name, name_th, specialty, specialty_th, qua
     '{"monday": ["10:00","18:00"], "tuesday": [], "wednesday": ["10:00","18:00"], "thursday": [], "friday": ["10:00","18:00"], "saturday": ["10:00","16:00"], "sunday": []}'
   ),
   (
-    'dr-pimnara',
-    'PC',
-    'Dr. Pimnara Chaiyasut',
-    'ทพญ. พิมนารา ชัยสุทธิ์',
+    'dr-kanya',
+    'KR',
+    'Dr. Kanya Rattanaporn',
+    'ทพญ. กันยา รัตนพร',
     'Orthodontics & Invisalign',
     'จัดฟันและจัดฟันใส',
     'Board-Certified Orthodontist',
@@ -44,10 +44,10 @@ INSERT INTO doctors (slug, initials, name, name_th, specialty, specialty_th, qua
     '{"monday": [], "tuesday": ["10:00","18:00"], "wednesday": [], "thursday": ["10:00","18:00"], "friday": [], "saturday": ["10:00","18:00"], "sunday": []}'
   ),
   (
-    'dr-kritsada',
-    'KV',
-    'Dr. Kritsada Vorapongse',
-    'ทพ. กฤษดา วรพงศ์',
+    'dr-somchai',
+    'SP',
+    'Dr. Somchai Pattanakit',
+    'ทพ. สมชาย พัฒนกิจ',
     'Endodontics & Root Canal',
     'รักษารากฟัน',
     'Root Canal Specialist',

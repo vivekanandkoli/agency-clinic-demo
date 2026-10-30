@@ -1,5 +1,5 @@
 -- =============================================
--- Sound Dental Clinic - Initial Database Schema
+-- Smile Bangkok Dental - Initial Database Schema
 -- Run this in the Supabase SQL Editor
 -- =============================================
 
