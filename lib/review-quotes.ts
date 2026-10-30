@@ -11,7 +11,7 @@ export const PATIENT_REVIEWS: PatientReview[] = [
   {
     id: '1',
     quote:
-      "The best dental experience I've ever had. Dr. Nattapong made my implant procedure completely painless. The clinic is modern, clean, and the staff is incredibly friendly.",
+      "The best dental experience I've ever had. Dr. Anan made my implant procedure completely painless. The clinic is modern, clean, and the staff is incredibly friendly.",
     author: 'Sarah M.',
     subtitle: 'Expat from UK',
     initials: 'SM',
@@ -19,7 +19,7 @@ export const PATIENT_REVIEWS: PatientReview[] = [
   {
     id: '2',
     quote:
-      'After years of hiding my smile, Invisalign at Sound Dental changed everything. Dr. Pimnara is amazing — my teeth are now perfectly aligned. Worth every baht!',
+      'After years of hiding my smile, Invisalign at Smile Bangkok Dental changed everything. Dr. Kanya is amazing — my teeth are now perfectly aligned. Worth every baht!',
     author: 'ธนพล ว.',
     subtitle: 'Bangkok',
     initials: 'ธ',

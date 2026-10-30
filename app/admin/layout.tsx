@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './admin.css'
 
 export const metadata: Metadata = {
-  title: 'Admin — Sound Dental Clinic',
-  description: 'Admin panel for Sound Dental Clinic',
+  title: 'Admin — Smile Bangkok Dental',
+  description: 'Admin panel for Smile Bangkok Dental',
   robots: 'noindex, nofollow',
 }
 

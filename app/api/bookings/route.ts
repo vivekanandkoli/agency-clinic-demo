@@ -4,12 +4,13 @@ import { createAdminClient } from '@/lib/supabase/server'
 import { isUuid } from '@/lib/booking-utils'
 import { getSupabasePublishableKey, getSupabaseUrl } from '@/lib/supabase/env'
 import type { BookingRequest } from '@/lib/types'
+import { isMissingAttributionColumn, sanitizeAttribution } from '@/lib/attribution-server'
 
 function mapBookingError(error: unknown): { message: string; status: number } {
   const msg = error instanceof Error ? error.message : String(error)
   if (msg.includes('SUPABASE_NOT_CONFIGURED') || msg.includes('Missing')) {
     return {
-      message: 'Booking is temporarily unavailable. Please call 099-793-5635 or message us on LINE.',
+      message: 'Booking is temporarily unavailable. Please call 02-000-0000 or message us on LINE.',
       status: 503,
     }
   }
@@ -25,7 +26,7 @@ function mapBookingError(error: unknown): { message: string; status: number } {
       status: 400,
     }
   }
-  return { message: 'Failed to create booking. Please try again or call 099-793-5635.', status: 500 }
+  return { message: 'Failed to create booking. Please try again or call 02-000-0000.', status: 500 }
 }
 
 async function insertBooking(row: Record<string, unknown>) {
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
       appointment_date,
       appointment_time,
       notes,
+      attribution,
     } = body
 
     if (!patient_name?.trim() || !patient_email?.trim() || !appointment_date || !appointment_time) {
@@ -100,7 +102,11 @@ export async function POST(request: NextRequest) {
       status: 'pending',
     }
 
-    const { data, error } = await insertBooking(row)
+    let { data, error } = await insertBooking({ ...row, ...sanitizeAttribution(attribution) })
+    if (error && isMissingAttributionColumn(error)) {
+      // Database not migrated yet (004_ad_attribution.sql) — still save the booking.
+      ;({ data, error } = await insertBooking(row))
+    }
     if (error) throw error
 
     return NextResponse.json({ booking: data, message: 'Booking confirmed!' }, { status: 201 })

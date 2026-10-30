@@ -7,7 +7,7 @@ export default function AdminLoginPage() {
     <div className="admin-login-page">
       <aside className="admin-login-brand">
         <div className="admin-login-brand-inner">
-          <p className="admin-login-eyebrow">Sound Dental Clinic</p>
+          <p className="admin-login-eyebrow">Smile Bangkok Dental</p>
           <h1 className="admin-login-brand-title">Admin</h1>
           <p className="admin-login-brand-text">
             Manage bookings, services, and your public site from one place.

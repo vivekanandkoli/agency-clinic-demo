@@ -51,6 +51,13 @@ export interface Booking {
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
   notes: string | null
   confirmation_sent: boolean
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_campaign?: string | null
+  gclid?: string | null
+  fbclid?: string | null
+  landing_page?: string | null
+  referrer?: string | null
   created_at: string
   updated_at: string
 }
@@ -79,6 +86,13 @@ export interface ContactSubmission {
   subject: string | null
   message: string
   status: 'new' | 'read' | 'replied'
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_campaign?: string | null
+  gclid?: string | null
+  fbclid?: string | null
+  landing_page?: string | null
+  referrer?: string | null
   created_at: string
 }
 
@@ -94,6 +108,7 @@ export interface BookingRequest {
   appointment_date: string
   appointment_time: string
   notes?: string
+  attribution?: Record<string, string>
 }
 
 export interface ContactRequest {
@@ -102,6 +117,7 @@ export interface ContactRequest {
   phone?: string
   subject?: string
   message: string
+  attribution?: Record<string, string>
 }
 
 export interface ChatRequest {

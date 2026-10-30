@@ -27,7 +27,7 @@ export default function AdminSidebar() {
   return (
     <aside className="admin-sidebar">
       <div className="admin-brand">
-        <div className="admin-brand-title">Sound Dental</div>
+        <div className="admin-brand-title">Smile Bangkok Dental</div>
         <div className="admin-brand-sub">Admin panel</div>
       </div>
       <nav aria-label="Admin navigation">

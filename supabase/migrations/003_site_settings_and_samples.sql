@@ -22,7 +22,7 @@ CREATE TRIGGER site_settings_updated_at
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 INSERT INTO site_settings (key, value) VALUES
-  ('clinic', '{"name":"Sound Dental Clinic","name_th":"คลินิกทันตกรรมซาวด์","tagline":"Premium Dental Care","phone":"099-793-5635","email":"sound.dentalclinic@gmail.com","line":"@sound.dentalclinic","address":"994, 996, 998 Rama III Road, Yan Nawa, Bangkok 10120","hours":"Open daily until 8:00 PM"}'),
+  ('clinic', '{"name":"Smile Bangkok Dental","name_th":"คลินิกทันตกรรมสไมล์ บางกอก","tagline":"Premium Dental Care","phone":"02-000-0000","email":"hello@smilebangkok-demo.example","line":"@smilebkk.demo","address":"123 Sukhumvit Road (demo address), Khlong Toei, Bangkok 10110","hours":"Open daily until 8:00 PM"}'),
   ('hero', '{"badge":"Premium Dental Care","title":"Your Smile Deserves Excellence","title_th":"รอยยิ้มของคุณสมควรได้รับความเป็นเลิศ","subtitle":"Modern dental care with a gentle, personalized approach.","subtitle_th":"บริการทันตกรรมคุณภาพระดับพรีเมียม","rating":"4.9","review_count":"2,400+"}'),
   ('stats', '{"years":15,"patients":2400,"rating":4.9,"open_days":7}')
 ON CONFLICT (key) DO NOTHING;
@@ -33,10 +33,10 @@ INSERT INTO bookings (
   service_name, doctor_name, appointment_date, appointment_time, status, notes
 )
 SELECT * FROM (VALUES
-  ('Sarah Mitchell', 'sarah.m@email.com', '081-234-5678', 'Teeth Whitening', 'Dr. Pimnara Chaiyasut', (CURRENT_DATE + 2)::date, '10:00', 'pending', 'First-time patient'),
-  ('Michael Chen', 'michael.c@email.com', '082-345-6789', 'Dental Checkup', 'Dr. Nattapong Srisawat', (CURRENT_DATE + 1)::date, '14:30', 'confirmed', NULL),
-  ('Lisa Thompson', 'lisa.t@email.com', NULL, 'Invisalign', 'Dr. Pimnara Chaiyasut', CURRENT_DATE, '11:00', 'completed', 'Follow-up visit'),
-  ('James Wilson', 'james.w@email.com', '083-456-7890', 'Dental Implant', 'Dr. Nattapong Srisawat', (CURRENT_DATE + 5)::date, '15:00', 'pending', 'Consultation requested')
+  ('Sarah Mitchell', 'sarah.m@email.com', '081-234-5678', 'Teeth Whitening', 'Dr. Kanya Rattanaporn', (CURRENT_DATE + 2)::date, '10:00', 'pending', 'First-time patient'),
+  ('Michael Chen', 'michael.c@email.com', '082-345-6789', 'Dental Checkup', 'Dr. Anan Wongsakul', (CURRENT_DATE + 1)::date, '14:30', 'confirmed', NULL),
+  ('Lisa Thompson', 'lisa.t@email.com', NULL, 'Invisalign', 'Dr. Kanya Rattanaporn', CURRENT_DATE, '11:00', 'completed', 'Follow-up visit'),
+  ('James Wilson', 'james.w@email.com', '083-456-7890', 'Dental Implant', 'Dr. Anan Wongsakul', (CURRENT_DATE + 5)::date, '15:00', 'pending', 'Consultation requested')
 ) AS v(patient_name, patient_email, patient_phone, service_name, doctor_name, appointment_date, appointment_time, status, notes)
 WHERE NOT EXISTS (SELECT 1 FROM bookings LIMIT 1);
 

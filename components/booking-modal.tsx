@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import type { Service, Doctor } from '@/lib/types'
+import { getAttribution, trackEvent } from '@/lib/tracking'
 
 interface BookingModalProps {
   services: Service[]
@@ -119,12 +120,14 @@ export default function BookingModal({ services, doctors }: BookingModalProps) {
           appointment_date: selectedDate,
           appointment_time: selectedTime,
           notes: notes || undefined,
+          attribution: getAttribution(),
         }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
         throw new Error(data.error || 'Booking failed. Please try again.')
       }
+      trackEvent('booking_submitted', { service: selectedService?.name })
       setStep('success')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -156,7 +159,7 @@ export default function BookingModal({ services, doctors }: BookingModalProps) {
         <header className="booking-header">
           <div className="booking-header-content">
             <h2 id="booking-title">Book Appointment</h2>
-            <p>Sound Dental Clinic · Bangkok</p>
+            <p>Smile Bangkok Dental · Bangkok</p>
           </div>
           <button type="button" className="booking-close" onClick={close} aria-label="Close">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -406,7 +409,7 @@ export default function BookingModal({ services, doctors }: BookingModalProps) {
               </div>
             </div>
             <p className="form-note" style={{ textAlign: 'center', marginTop: 8 }}>
-              Questions? LINE <strong>@sound.dentalclinic</strong> or call <strong>099-793-5635</strong>
+              Questions? LINE <strong>@smilebkk.demo</strong> or call <strong>02-000-0000</strong>
             </p>
           </div>
         </div>

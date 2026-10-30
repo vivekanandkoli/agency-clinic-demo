@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-export default function Navigation({ clinicName = 'Sound Dental' }: { clinicName?: string }) {
+export default function Navigation({ clinicName = 'Smile Bangkok Dental' }: { clinicName?: string }) {
   useEffect(() => {
     const hamburger = document.getElementById('navHamburger')
     const drawer = document.getElementById('mobileDrawer')
@@ -77,7 +77,7 @@ export default function Navigation({ clinicName = 'Sound Dental' }: { clinicName
       {/* Mobile Drawer */}
       <div className="mobile-drawer" id="mobileDrawer">
         <div className="mobile-drawer-inner">
-          <div className="mobile-drawer-logo">Sound <span>Dental</span></div>
+          <div className="mobile-drawer-logo">Smile Bangkok <span>Dental</span></div>
           <nav className="mobile-nav-links">
             <a href="#services" onClick={() => document.getElementById('mobileDrawer')?.classList.remove('open')}>Services</a>
             <a href="#doctors" onClick={() => document.getElementById('mobileDrawer')?.classList.remove('open')}>Our Team</a>
@@ -94,8 +94,8 @@ export default function Navigation({ clinicName = 'Sound Dental' }: { clinicName
             Book Appointment
           </button>
           <div className="mobile-drawer-contact">
-            <a href="tel:0997935635">📞 099-793-5635</a>
-            <a href="https://line.me/R/ti/p/@sound.dentalclinic" target="_blank" rel="noreferrer">💬 @sound.dentalclinic</a>
+            <a href="tel:020000000">📞 02-000-0000</a>
+            <a href="https://line.me/R/ti/p/@smilebkk.demo" target="_blank" rel="noreferrer">💬 @smilebkk.demo</a>
           </div>
         </div>
       </div>

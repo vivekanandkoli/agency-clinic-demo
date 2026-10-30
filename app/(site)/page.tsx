@@ -231,7 +231,7 @@ export default async function Home() {
             <div className="book-grid">
             <div className="book-info">
               <h3>Visit Our Clinic</h3>
-              <p>Experience premium dental care in a comfortable, modern environment. We&apos;re conveniently located on Rama III Road with easy parking and BTS access.</p>
+              <p>Experience premium dental care in a comfortable, modern environment. We&apos;re conveniently located on Sukhumvit Road, a short walk from the BTS.</p>
               <div className="contact-item">
                 <div className="contact-icon">📍</div>
                 <div>{clinic.address}</div>
@@ -272,16 +272,16 @@ export default async function Home() {
 
       {/* Sticky Book Bar */}
       <div className="sticky-book-bar" id="stickyBar">
-        <span className="sticky-bar-text">Sound Dental · Open Today until 8 PM</span>
+        <span className="sticky-bar-text">Smile Bangkok Dental · Open Today until 8 PM</span>
         <button className="sticky-bar-btn" id="stickyBookBtn">Book Now — Free Consult</button>
       </div>
 
       {/* Footer */}
       <footer>
         <div className="footer-inner">
-          <div className="footer-logo">Sound <span>Dental</span> Clinic</div>
-          <div>994 Rama III Rd, Bangkok · 099-793-5635 · Open daily 10 AM – 8 PM</div>
-          <div>© 2026 Sound Dental Clinic · Built with ❤️ by Namvi Digital</div>
+          <div className="footer-logo">Smile Bangkok <span>Dental</span></div>
+          <div>123 Sukhumvit Rd (demo address), Bangkok · 02-000-0000 · Open daily 10 AM – 8 PM</div>
+          <div>© 2026 Smile Bangkok Dental — fictional demo clinic; doctors, reviews and stats are sample content · Built with ❤️ by Namvi Digital</div>
         </div>
       </footer>
 
@@ -308,9 +308,9 @@ const FALLBACK_SERVICES: Service[] = [
 ]
 
 const FALLBACK_DOCTORS: Doctor[] = [
-  { id: '1', slug: 'dr-nattapong', initials: 'NS', name: 'Dr. Nattapong Srisawat', name_th: null, specialty: 'Clinic Director', specialty_th: null, qualifications: 'D.D.S., M.Sc. in Prosthodontics', experience_years: 15, bio: '15+ years of excellence in dental implants and cosmetic dentistry', image_url: null, availability: {}, is_active: true, created_at: '', updated_at: '' },
-  { id: '2', slug: 'dr-pimnara', initials: 'PC', name: 'Dr. Pimnara Chaiyasut', name_th: null, specialty: 'Orthodontist', specialty_th: null, qualifications: 'Board-Certified Orthodontist', experience_years: 10, bio: 'Invisalign Diamond Provider with 500+ cases completed', image_url: null, availability: {}, is_active: true, created_at: '', updated_at: '' },
-  { id: '3', slug: 'dr-kritsada', initials: 'KV', name: 'Dr. Kritsada Vorapongse', name_th: null, specialty: 'Endodontist', specialty_th: null, qualifications: 'Root Canal Specialist', experience_years: 12, bio: 'Pain-free treatments with microscope-assisted precision', image_url: null, availability: {}, is_active: true, created_at: '', updated_at: '' },
+  { id: '1', slug: 'dr-anan', initials: 'AW', name: 'Dr. Anan Wongsakul', name_th: null, specialty: 'Clinic Director', specialty_th: null, qualifications: 'D.D.S., M.Sc. in Prosthodontics', experience_years: 15, bio: '15+ years of excellence in dental implants and cosmetic dentistry', image_url: null, availability: {}, is_active: true, created_at: '', updated_at: '' },
+  { id: '2', slug: 'dr-kanya', initials: 'KR', name: 'Dr. Kanya Rattanaporn', name_th: null, specialty: 'Orthodontist', specialty_th: null, qualifications: 'Board-Certified Orthodontist', experience_years: 10, bio: 'Invisalign Diamond Provider with 500+ cases completed', image_url: null, availability: {}, is_active: true, created_at: '', updated_at: '' },
+  { id: '3', slug: 'dr-somchai', initials: 'SP', name: 'Dr. Somchai Pattanakit', name_th: null, specialty: 'Endodontist', specialty_th: null, qualifications: 'Root Canal Specialist', experience_years: 12, bio: 'Pain-free treatments with microscope-assisted precision', image_url: null, availability: {}, is_active: true, created_at: '', updated_at: '' },
 ]
 
 const ANY_DOCTOR: Doctor = {
@@ -322,6 +322,6 @@ const FAQ_ITEMS = [
   { question: 'How long do dental implants last?', answer: 'With proper care, dental implants can last a lifetime. The crown on top typically lasts 15–25 years. We use premium Swiss implants with a lifetime warranty on the implant body itself.' },
   { question: 'Is teeth whitening safe?', answer: "Yes — professional Zoom whitening at our clinic is completely safe. Our dentists custom-fit trays and use protective gels to shield your gums. Results last 6–12 months with good oral hygiene." },
   { question: 'Do you treat children?', answer: 'Absolutely. We welcome patients from age 3 upwards. Our clinic is designed to be child-friendly, and our team is trained to make young patients feel comfortable and safe.' },
-  { question: 'What if I have a dental emergency?', answer: 'Call us immediately at 099-793-5635. We reserve same-day slots for emergencies every day including weekends.' },
+  { question: 'What if I have a dental emergency?', answer: 'Call us immediately at 02-000-0000. We reserve same-day slots for emergencies every day including weekends.' },
   { question: 'Do you accept insurance?', answer: 'We accept most major Thai health insurance plans and corporate dental benefits. We also offer interest-free installment plans for larger procedures.' },
 ]

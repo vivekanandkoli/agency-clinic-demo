@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { ContactSubmission } from '@/lib/types'
+import { describeSource } from '@/lib/tracking'
 import { patchAdmin } from '@/lib/admin-api-client'
 
 export default function ContactsTable({
@@ -41,7 +42,7 @@ export default function ContactsTable({
         <table className="admin-table">
           <thead>
             <tr>
-              {['From', 'Subject', 'Message', 'Date', 'Status', 'Actions'].map((h) => (
+              {['From', 'Subject', 'Message', 'Source', 'Date', 'Status', 'Actions'].map((h) => (
                 <th key={h}>{h}</th>
               ))}
             </tr>
@@ -56,6 +57,7 @@ export default function ContactsTable({
                 </td>
                 <td>{c.subject || '—'}</td>
                 <td style={{ maxWidth: 280 }}>{c.message}</td>
+                <td style={{ fontSize: 13 }}>{describeSource(c)}</td>
                 <td style={{ whiteSpace: 'nowrap' }}>
                   {new Date(c.created_at).toLocaleDateString()}
                 </td>

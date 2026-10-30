@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { parseAdminJson } from '@/lib/admin-api-client'
 import type { Booking } from '@/lib/types'
+import { describeSource } from '@/lib/tracking'
 
 type BookingWithRelations = Booking & {
   services: { name: string } | null
@@ -92,10 +93,26 @@ export default function BookingsTable({ initialBookings }: { initialBookings: Bo
           </div>
         ) : (
           <div className="admin-table-wrap">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '0 0 12px', fontSize: 13 }}>
+              <strong style={{ marginRight: 4 }}>Bookings by source:</strong>
+              {Object.entries(
+                filteredBookings.reduce<Record<string, number>>((acc, b) => {
+                  const k = describeSource(b)
+                  acc[k] = (acc[k] ?? 0) + 1
+                  return acc
+                }, {})
+              )
+                .sort((a, b) => b[1] - a[1])
+                .map(([source, count]) => (
+                  <span key={source} className="admin-badge admin-badge-read">
+                    {source}: {count}
+                  </span>
+                ))}
+            </div>
             <table className="admin-table">
               <thead>
                 <tr>
-                  {['Patient', 'Contact', 'Service', 'Doctor', 'Date & time', 'Status', 'Notes'].map((h) => (
+                  {['Patient', 'Contact', 'Service', 'Doctor', 'Date & time', 'Source', 'Status', 'Notes'].map((h) => (
                     <th key={h}>{h}</th>
                   ))}
                 </tr>
@@ -117,6 +134,12 @@ export default function BookingsTable({ initialBookings }: { initialBookings: Bo
                     <td style={{ whiteSpace: 'nowrap' }}>
                       <div>{b.appointment_date}</div>
                       <div style={{ fontSize: 12, color: 'var(--adm-muted)' }}>{b.appointment_time}</div>
+                    </td>
+                    <td style={{ fontSize: 13 }}>
+                      <div>{describeSource(b)}</div>
+                      {b.landing_page && (
+                        <div style={{ fontSize: 12, color: 'var(--adm-muted)' }}>{b.landing_page}</div>
+                      )}
                     </td>
                     <td>
                       <select
