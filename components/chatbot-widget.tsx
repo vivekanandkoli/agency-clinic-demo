@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useId } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { ChatMessage } from '@/lib/types'
 
 const SYSTEM_PROMPT = `You are a friendly dental clinic assistant for Smile Bangkok Dental (คลินิกทันตกรรมสไมล์ บางกอก) in Bangkok, Thailand.
@@ -29,8 +29,8 @@ const QUICK_REPLIES = [
 ]
 
 export default function ChatbotWidget() {
-  const reactId = useId().replace(/:/g, '')
-  const sessionIdRef = useRef(`session_${reactId}`)
+  // Random per visitor; useId() is the same for everyone, so all chats would share one row.
+  const sessionIdRef = useRef<string | null>(null)
 
   const [messages, setMessages] = useState<Array<{ text: string; sender: 'bot' | 'user'; id: number }>>([])
   const [input, setInput] = useState('')
@@ -43,7 +43,7 @@ export default function ChatbotWidget() {
   useEffect(() => {
     // Show initial greeting after a delay
     setTimeout(() => {
-      addMessage('สวัสดีค่ะ! Welcome to Smile Bangkok Dental 🦷<br><br>How can I help you today? / วันนี้ให้ช่วยอะไรได้บ้างคะ?', 'bot')
+      addMessage('สวัสดีค่ะ! Welcome to Smile Bangkok Dental 🦷\n\nHow can I help you today? / วันนี้ให้ช่วยอะไรได้บ้างคะ?', 'bot')
       setQuickRepliesShown(true)
     }, 600)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,6 +60,7 @@ export default function ChatbotWidget() {
 
   const getBotReply = async (userText: string) => {
     historyRef.current.push({ role: 'user', content: userText })
+    sessionIdRef.current ??= `session_${crypto.randomUUID()}`
     setIsTyping(true)
 
     try {
@@ -105,7 +106,7 @@ export default function ChatbotWidget() {
       setIsTyping(true)
       setTimeout(() => {
         setIsTyping(false)
-        addMessage('Great! To book an appointment, click the <strong>Book Appointment</strong> button at the top of the page. 📅<br><br>Or contact us directly:<br>📞 02-000-0000<br>💬 LINE: @smilebkk.demo', 'bot')
+        addMessage('Great! To book an appointment, click the Book Appointment button at the top of the page. 📅\n\nOr contact us directly:\n📞 02-000-0000\n💬 LINE: @smilebkk.demo', 'bot')
         document.dispatchEvent(new CustomEvent('openBookingModal'))
       }, 600)
       return
@@ -130,10 +131,10 @@ export default function ChatbotWidget() {
         <div className="chatbot-messages" id="chatMessages" ref={messagesRef}>
           {messages.map((msg) => (
             <div key={msg.id} className={`message ${msg.sender}`}>
-              <div
-                className="message-bubble"
-                dangerouslySetInnerHTML={{ __html: msg.text }}
-              />
+              {/* Plain text: replies come from the model and input from visitors, never trusted HTML. */}
+              <div className="message-bubble" style={{ whiteSpace: 'pre-line' }}>
+                {msg.text}
+              </div>
             </div>
           ))}
           {quickRepliesShown && (
