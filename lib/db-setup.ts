@@ -8,6 +8,7 @@ const MIGRATION_FILES = [
   '003_site_settings_and_samples.sql',
   '004_ad_attribution.sql',
   '005_api_grants.sql',
+  '006_restrict_public_writes.sql',
 ]
 
 export function getDatabaseUrl(): string | null {
