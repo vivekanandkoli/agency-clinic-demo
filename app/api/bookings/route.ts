@@ -42,23 +42,6 @@ async function insertBooking(row: Record<string, unknown>) {
   }
 }
 
-export async function GET() {
-  try {
-    const supabase = createAdminClient()
-    const { data, error } = await supabase
-      .from('bookings')
-      .select(`*, services(name), doctors(name)`)
-      .order('appointment_date', { ascending: false })
-      .order('created_at', { ascending: false })
-
-    if (error) throw error
-    return NextResponse.json({ bookings: data })
-  } catch (error) {
-    console.error('GET /api/bookings error:', error)
-    return NextResponse.json({ error: 'Failed to fetch bookings' }, { status: 500 })
-  }
-}
-
 export async function POST(request: NextRequest) {
   try {
     const body: BookingRequest = await request.json()

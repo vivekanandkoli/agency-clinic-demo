@@ -260,6 +260,7 @@ button.service-option {
 }
 
 .service-option-name {
+    display: block;
     font-size: 14px;
     font-weight: 600;
     color: var(--dark);
@@ -267,11 +268,13 @@ button.service-option {
 }
 
 .service-option-name-th {
+    display: block;
     font-size: 11px;
     color: var(--light);
 }
 
 .service-option-price {
+    display: block;
     font-size: 12px;
     color: var(--accent);
     font-weight: 600;
@@ -342,6 +345,7 @@ button.doctor-option {
 }
 
 .doctor-option-name {
+    display: block;
     font-size: 15px;
     font-weight: 600;
     color: var(--dark);
@@ -349,12 +353,14 @@ button.doctor-option {
 }
 
 .doctor-option-specialty {
+    display: block;
     font-size: 12px;
     color: var(--accent);
     font-weight: 500;
 }
 
 .doctor-option-avail {
+    display: block;
     font-size: 11px;
     color: var(--light);
     margin-top: 4px;

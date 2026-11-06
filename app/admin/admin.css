@@ -443,6 +443,69 @@
   border-bottom: 1px solid var(--adm-border);
 }
 
+/* Chats */
+.admin-chat-summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  cursor: pointer;
+}
+
+.admin-chat-question {
+  font-weight: 600;
+  color: var(--adm-text);
+  flex: 1 1 260px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-chat-meta {
+  font-size: 13px;
+  color: var(--adm-muted);
+  white-space: nowrap;
+}
+
+.admin-chat-transcript {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.admin-chat-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: var(--adm-radius);
+  font-size: 14px;
+}
+
+.admin-chat-msg p {
+  margin: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.admin-chat-msg-user {
+  align-self: flex-end;
+  background: var(--adm-primary-soft);
+}
+
+.admin-chat-msg-assistant {
+  align-self: flex-start;
+  background: var(--adm-bg);
+}
+
+.admin-chat-role {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--adm-muted);
+  margin-bottom: 2px;
+}
+
 .admin-list-item:last-child {
   border-bottom: none;
 }

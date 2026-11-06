@@ -7,6 +7,7 @@ import {
   ExternalLink,
   LayoutDashboard,
   Mail,
+  MessageCircle,
   Settings,
   Stethoscope,
   Users,
@@ -18,6 +19,7 @@ const NAV = [
   { href: '/admin/services', label: 'Services', icon: Stethoscope },
   { href: '/admin/doctors', label: 'Doctors', icon: Users },
   { href: '/admin/contacts', label: 'Contacts', icon: Mail },
+  { href: '/admin/chats', label: 'Chats', icon: MessageCircle },
   { href: '/admin/settings', label: 'Site settings', icon: Settings },
 ]
 

@@ -21,6 +21,11 @@ For booking: Encourage them to click the "Book Appointment" button on the websit
 
 Respond in the same language the user writes in. If Thai, reply in Thai. If English, reply in English. Keep replies concise and friendly. Max 3-4 sentences per reply. Use occasional emoji. Never make up prices — say "Please call us for pricing" or "ราคาขึ้นอยู่กับการตรวจ".`
 
+const MAX_MESSAGE_CHARS = 1000
+const MAX_HISTORY_MESSAGES = 20
+// Bot replies (400 tokens) can run past 1000 characters, especially in Thai.
+const MAX_HISTORY_ITEM_CHARS = 2000
+
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json()
@@ -28,6 +33,13 @@ export async function POST(request: NextRequest) {
 
     if (!message?.trim()) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
+    }
+
+    // The endpoint is public and every call spends API credit, so bound what one request can send.
+    if (message.length > MAX_MESSAGE_CHARS) {
+      return NextResponse.json({
+        reply: `Sorry, that message is too long. Please keep it under ${MAX_MESSAGE_CHARS} characters, or call us at 02-000-0000.`,
+      })
     }
 
     if (!process.env.ANTHROPIC_API_KEY) {
@@ -41,38 +53,63 @@ export async function POST(request: NextRequest) {
       apiKey: process.env.ANTHROPIC_API_KEY,
     })
 
-    // Build messages array — use history but cap at last 10 exchanges to save tokens
-    const recentHistory = history.slice(-20)
+    // Last 10 exchanges, client-supplied so validated and length-capped.
+    const recentHistory = (Array.isArray(history) ? history : [])
+      .filter(
+        (m) =>
+          (m?.role === 'user' || m?.role === 'assistant') &&
+          typeof m.content === 'string' &&
+          m.content.trim()
+      )
+      .slice(-MAX_HISTORY_MESSAGES)
+      .map((m) => ({ role: m.role, content: m.content.slice(0, MAX_HISTORY_ITEM_CHARS) }))
+    // The API needs the conversation to start with a user turn; an even-length slice of an
+    // alternating chat that ends on the user starts with the bot.
+    while (recentHistory.length > 0 && recentHistory[0].role !== 'user') recentHistory.shift()
+    if (recentHistory.length === 0) {
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 })
+    }
 
     const response = await client.messages.create({
       model: process.env.ANTHROPIC_MODEL || 'claude-haiku-5-5',
       max_tokens: 400,
+      // Short FAQ replies: skip thinking so it can't eat the token budget or delay the reply
+      // (Haiku 5.5 thinks by default; disabling is allowed at its default effort).
+      thinking: { type: 'disabled' },
       system: SYSTEM_PROMPT,
-      messages: recentHistory.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
+      messages: recentHistory,
     })
 
-    const reply = response.content[0].type === 'text' ? response.content[0].text : ''
+    // Content can include non-text blocks, so find the text rather than assuming content[0].
+    const text = response.content
+      .map((block) => (block.type === 'text' ? block.text : ''))
+      .join('')
+      .trim()
+    // Never return an empty reply: it would be sent back as history and make every later request fail.
+    const reply =
+      text ||
+      'Sorry, I can’t help with that here. Please call us at 02-000-0000 or message us on LINE: @smilebkk.demo'
 
     // Persist session to Supabase (non-blocking, best-effort)
-    try {
-      const supabase = createAdminClient()
-      const allMessages = [
-        ...recentHistory,
-        { role: 'assistant' as const, content: reply },
-      ]
-      await supabase
-        .from('chat_sessions')
-        .upsert({
-          session_id,
-          messages: allMessages,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('session_id', session_id)
-    } catch {
-      // Non-critical — don't fail the response
+    if (typeof session_id === 'string' && session_id.length <= 100) {
+      try {
+        const supabase = createAdminClient()
+        const allMessages = [
+          ...recentHistory,
+          { role: 'assistant' as const, content: reply },
+        ]
+        const { error: saveError } = await supabase.from('chat_sessions').upsert(
+          {
+            session_id,
+            messages: allMessages,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'session_id' }
+        )
+        if (saveError) console.error('Chat session save failed:', saveError.message)
+      } catch {
+        // Non-critical — don't fail the response
+      }
     }
 
     return NextResponse.json({ reply })

@@ -7,6 +7,8 @@ const MIGRATION_FILES = [
   '002_seed_data.sql',
   '003_site_settings_and_samples.sql',
   '004_ad_attribution.sql',
+  '005_api_grants.sql',
+  '006_restrict_public_writes.sql',
 ]
 
 export function getDatabaseUrl(): string | null {
@@ -24,6 +26,13 @@ export function getDatabaseUrl(): string | null {
   return `postgresql://postgres:${encodeURIComponent(password)}@db.${ref}.supabase.co:5432/postgres`
 }
 
+/** Local Postgres (supabase start) has no SSL; hosted Supabase requires it. */
+function sslFor(connectionString: string): pg.ClientConfig['ssl'] {
+  const host = new URL(connectionString).hostname
+  const isLocal = ['localhost', '127.0.0.1', '::1', '[::1]'].includes(host)
+  return isLocal ? false : { rejectUnauthorized: false }
+}
+
 export function canRunDatabaseSetup(): boolean {
   return getDatabaseUrl() !== null
 }
@@ -38,7 +47,7 @@ export async function runDatabaseMigrations(): Promise<void> {
 
   const client = new pg.Client({
     connectionString,
-    ssl: { rejectUnauthorized: false },
+    ssl: sslFor(connectionString),
   })
 
   await client.connect()
@@ -60,7 +69,7 @@ export async function databaseTablesExist(): Promise<boolean> {
 
   const client = new pg.Client({
     connectionString,
-    ssl: { rejectUnauthorized: false },
+    ssl: sslFor(connectionString),
   })
 
   try {
