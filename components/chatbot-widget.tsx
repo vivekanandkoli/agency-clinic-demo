@@ -165,6 +165,7 @@ export default function ChatbotWidget() {
             className="chat-input"
             id="chatInput"
             placeholder="Type a message... / พิมพ์ข้อความ..."
+            maxLength={1000}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
