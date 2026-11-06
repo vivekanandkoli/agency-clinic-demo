@@ -21,6 +21,15 @@ export function getSupabaseUrl(): string | undefined {
   return process.env.NEXT_PUBLIC_SUPABASE_URL
 }
 
+/** Same-origin path the browser uses to reach a local Supabase's auth API (see next.config.ts). */
+export const SUPABASE_AUTH_PROXY_PATH = '/supabase-auth'
+
+/** Supabase running on this machine (e.g. `supabase start` in Docker). */
+export function isLoopbackSupabaseUrl(url: string): boolean {
+  const { hostname } = new URL(url)
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '[::1]'
+}
+
 export function isPlaceholderSupabaseValue(value: string): boolean {
   return (
     value.includes('your-project') ||

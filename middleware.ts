@@ -67,6 +67,6 @@ export const config = {
      * Match all request paths except static assets.
      * Keeps Supabase auth sessions refreshed (official Next.js pattern).
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|css|ico)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|supabase-auth/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|css|ico)$).*)',
   ],
 }
